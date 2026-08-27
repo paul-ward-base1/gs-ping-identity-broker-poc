@@ -1,0 +1,117 @@
+#{$Tag} {
+  @include meta-xsmall;
+  text-transform: uppercase;
+
+  @include breakpoint(tablet-large) {
+    @include meta-small;
+  }
+
+  &--type {
+    &-content {
+      display: inline-flex;
+      align-items: center;
+      gap: $spacing-4;
+
+      &#{$Tag}--level {
+        &-Daisy {
+          color: $river-100;
+        }
+
+        &-Brownie {
+          color: $brown-100;
+        }
+
+        &-Junior {
+          color: $tertiary;
+        }
+
+        &-Cadette {
+          color: $poppy-100;
+        }
+
+        &-Senior {
+          color: $flame-100;
+        }
+
+        &-Ambassador {
+          color: $gold-100;
+        }
+
+        &-All {
+          color: $green-100;
+        }
+
+        // Spanish Cases Workaround
+        &-Margarita {
+          color: $river-100;
+        }
+
+        &-Menor {
+          color: $tertiary;
+        }
+
+        &-Cadete {
+          color: $poppy-100;
+        }
+
+        &-Mayor {
+          color: $flame-100;
+        }
+
+        &-Embajador {
+          color: $gold-100;
+        }
+      }
+    }
+
+    &-filled {
+      padding: 0 $spacing-6;
+      color: $white;
+      border-radius: 40px;
+
+      @include breakpoint(tablet-large) {
+        @include meta-small;
+
+        padding: 0 $spacing-8;
+      }
+
+      &#{$Tag}--level {
+        &-daisy {
+          background-color: $river-100;
+          color: $neutral-100;
+        }
+
+        &-brownie {
+          background-color: $brown-100;
+        }
+
+        &-junior {
+          background-color: $tertiary;
+        }
+
+        &-cadette {
+          background-color: $poppy-100;
+        }
+
+        &-senior {
+          background-color: $flame-100;
+          color: $neutral-100;
+        }
+
+        &-ambassador {
+          background-color: $gold-100;
+          color: $neutral-100;
+        }
+
+        &-all {
+          background-color: $green-100;
+        }
+      }
+    }
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+}

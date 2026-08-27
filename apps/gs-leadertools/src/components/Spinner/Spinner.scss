@@ -1,0 +1,25 @@
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 6px solid rgba(0, 0, 0, 0.1);
+  border-top-color: $tertiary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.spinner--on-dark {
+  border-color: rgba(255, 255, 255, 0.35);
+  border-top-color: $tertiary;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.5s;
+  }
+}

@@ -1,0 +1,49 @@
+#{$DonorRecognition} {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $spacing-32;
+  padding: $spacing-48 0;
+  width: 100%;
+
+  @include breakpoint(tablet-large) {
+    gap: $spacing-48;
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-12;
+    width: 100%;
+    max-width: 37.2rem;
+    padding: 0 $spacing-16;
+
+    @include breakpoint(tablet-large) {
+      padding: 0;
+    }
+  }
+
+  &__title {
+    @include font-styles(1.125rem, 600, normal, $font-family-poppins); // Poppins SemiBold 18px — all breakpoints
+    color: $neutral-100;
+    margin: 0;
+  }
+
+  &__logo {
+    display: block;
+    max-height: 2.6875rem; // 43px
+    width: auto;
+    max-width: 100%;
+    align-self: flex-start;
+  }
+
+  &__logo-link {
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  &__body {
+    @include body-small;
+    color: $neutral-100;
+  }
+}

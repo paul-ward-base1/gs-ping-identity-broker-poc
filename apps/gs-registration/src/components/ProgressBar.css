@@ -1,0 +1,23 @@
+.progress-bar {
+  padding: 0 var(--space-md);
+}
+
+.progress-bar-track {
+  height: 4px;
+  background: #e9ecef;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+@media (min-width: 768px) {
+  .progress-bar {
+    padding: var(--space-sm) var(--space-xl) 0;
+  }
+}

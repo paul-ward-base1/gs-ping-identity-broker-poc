@@ -1,0 +1,132 @@
+.renew-member-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-pill);
+  padding: 5px 12px;
+  width: fit-content;
+}
+
+.renew-member-chip-sep {
+  color: var(--color-border);
+}
+
+.renew-product-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.renew-product-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  background: var(--color-white);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.renew-product-card:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.02);
+}
+
+.renew-product-card--selected {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.04);
+}
+
+.renew-product-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.renew-product-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+
+.renew-product-card--selected .renew-product-radio {
+  border-color: var(--color-primary);
+}
+
+.renew-product-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.renew-product-card--selected .renew-product-radio-dot {
+  opacity: 1;
+}
+
+.renew-product-badge {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.1);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-pill);
+}
+
+.renew-product-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-left: 28px;
+}
+
+.renew-product-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.renew-product-price {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.renew-product-price span {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+}
+
+.renew-product-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.renew-product-expiry {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(0, 86, 64, 0.05);
+  border-radius: var(--border-radius-md);
+}
+
+.renew-product-expiry strong {
+  color: var(--color-primary);
+}

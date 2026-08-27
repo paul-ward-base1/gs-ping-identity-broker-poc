@@ -1,0 +1,102 @@
+.checkout-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.checkout-primary-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px var(--space-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.checkout-rule {
+  height: 1px;
+  background: var(--color-border);
+}
+
+/* Input fields */
+.checkout-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+}
+
+.checkout-input {
+  flex: 1;
+  height: 52px;
+  padding: 0 var(--space-md);
+  border: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  outline: none;
+}
+
+.checkout-input::placeholder {
+  color: #adb5bd;
+}
+
+.checkout-field:focus-within {
+  border-color: var(--color-primary);
+}
+
+.checkout-password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 52px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+/* Forgot password */
+.checkout-forgot {
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  text-align: left;
+}
+
+/* Log in button */
+.checkout-login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px var(--space-md);
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}

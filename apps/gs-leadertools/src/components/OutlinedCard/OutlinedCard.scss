@@ -1,0 +1,81 @@
+#{$OutlinedCard} {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $spacing-10;
+  border: 1px solid $neutral-60;
+  border-radius: $spacing-12;
+  width: 100%;
+  background-color: $white;
+  color: $neutral-100;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease-in,
+    color 0.2s ease-in;
+
+  @include breakpoint(tablet-large) {
+    max-width: 22.5rem;
+  }
+
+  &:hover:not(:has(#{$DownloadButton}:hover)) {
+    background-color: $neutral-10;
+  }
+
+  &:active:not(:has(#{$DownloadButton}:active)) {
+    background-color: $green-100;
+
+    #{$OutlinedCard}__card-title {
+      color: $white;
+    }
+
+    #{$OutlinedCard}__card-icon {
+      background-color: transparent;
+      color: $white;
+    }
+
+    #{$DownloadButton} {
+      color: $white;
+    }
+  }
+
+  &__card-content {
+    display: flex;
+    align-items: center;
+    gap: $spacing-10;
+  }
+
+  &__card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: $crocus-10;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: $tertiary;
+    padding: $spacing-4;
+  }
+
+  &__card-title {
+    @include title-xsmall;
+    margin: 0;
+  }
+
+  // Filled variant — same chrome as outlined except gray-at-rest background
+  // and full-width. Used by File content modules inside Award steps.
+  &--variant-filled {
+    background-color: $neutral-10;
+    max-width: none;
+
+    // `:not(:active)` lets the base :active green rule win on click-and-hold.
+    &:hover:not(:active):not(:has(#{$DownloadButton}:hover)) {
+      background-color: $white;
+    }
+
+    // Repaint the DownloadButton hover white so it stands out against the
+    // gray card (default $neutral-10 hover would blend in).
+    #{$DownloadButton}:hover:not(:active) {
+      background-color: $white;
+    }
+  }
+}

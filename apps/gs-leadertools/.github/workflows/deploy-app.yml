@@ -1,0 +1,45 @@
+# VTKN-471
+# App redeploy from the app repo. Thin caller of the reusable app-template
+# workflow in gs-infra-config. Same template is invoked from the central
+# infra repo's app.yml — keeps the deploy path identical regardless of
+# where it was triggered. App is fixed to gsbadges (this repo's image);
+# membership is deployed from its own repo's caller.
+name: deploy-app
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        type: choice
+        required: true
+        default: dev
+        options:
+          - dev
+          - staging
+          - uat
+          - uat2
+      version:
+        description: Image version (blank → "latest")
+        type: string
+        required: false
+        default: ''
+      verify:
+        description: Review before deployment
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  deploy:
+    uses: gsusa/gs-infra-config/.github/workflows/app-template.yml@main
+    with:
+      environment: ${{ inputs.environment }}
+      app: gsbadges
+      version: ${{ inputs.version }}
+      terraform_ref: main
+      verify: ${{ inputs.verify }}
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      REPO_READ_TOKEN: ${{ secrets.REPO_READ_TOKEN }}

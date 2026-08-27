@@ -1,0 +1,33 @@
+#{$FilterChips} {
+  display: inline-flex;
+  align-items: center;
+  background-color: $neutral-20;
+  padding: $spacing-4;
+  border-radius: $spacing-40;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s ease-in;
+
+  &__label {
+    @include meta-small-sentence-case;
+    padding: 0 $spacing-6;
+  }
+
+  &__icon {
+    color: $neutral-60;
+    transition: color 0.2s ease;
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: $spacing-2;
+  }
+
+  &:hover {
+    #{$FilterChips}__icon {
+      color: $green-100;
+    }
+  }
+
+  &:focus {
+    @include focus-state;
+  }
+}

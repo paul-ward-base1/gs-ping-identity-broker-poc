@@ -1,0 +1,261 @@
+#{$Button} {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+  border: 0;
+  border-radius: 0.625rem;
+  text-decoration: none;
+  user-select: none;
+  max-width: 100%;
+  overflow: hidden;
+
+  &__label {
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+
+    &--mobile {
+      @include breakpoint(desktop) {
+        display: none;
+      }
+    }
+
+    &--desktop {
+      display: none;
+
+      @include breakpoint(desktop) {
+        display: inline;
+      }
+    }
+  }
+
+  &__count {
+    @include meta-small;
+
+    display: flex;
+    width: 1.125rem;
+    height: 1.125rem;
+    padding: $spacing-3 $spacing-4;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-8;
+    flex-shrink: 0;
+    color: $white;
+    border-radius: 50%;
+    background-color: $secondary;
+  }
+
+  &__icon {
+    color: inherit;
+  }
+
+  &--fill {
+    width: 100%;
+    justify-content: center;
+
+    @include breakpoint(desktop) {
+      width: auto;
+    }
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    pointer-events: none;
+  }
+
+  // Primary variant
+  &--primary {
+    background-color: $green-100;
+    color: $white;
+
+    &:hover {
+      background-color: $green-140;
+    }
+
+    &:active {
+      @include active-state;
+
+      background-color: $neutral-100;
+    }
+
+    &:focus {
+      @include focus-state;
+
+      background-color: $green-100;
+    }
+
+    &:active:focus,
+    &:focus:active {
+      @include active-state;
+
+      background-color: $neutral-100;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      background-color: $neutral-60;
+    }
+  }
+
+  // Secondary variant
+  &--secondary {
+    background-color: transparent;
+    color: $green-100;
+    border: 2px solid $green-100;
+
+    &:hover {
+      background-color: $neutral-10;
+    }
+
+    &:active {
+      background-color: transparent;
+      border-color: $neutral-100;
+      color: $neutral-100;
+      @include active-state;
+    }
+
+    &:focus {
+      @include focus-state;
+    }
+
+    &:active:focus,
+    &:focus:active {
+      background-color: transparent;
+      border-color: $neutral-100;
+      color: $neutral-100;
+      @include active-state;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      background-color: transparent;
+      border-color: $neutral-60;
+      color: $neutral-60;
+    }
+  }
+
+  // Primary and secondary sizes
+  &--primary,
+  &--secondary {
+    &-small {
+      padding: 0.6rem 0.875rem;
+      @include label-small;
+
+      #{$Button}__icon {
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+    }
+
+    &-large {
+      padding: 0.625rem 1rem;
+      @include label-default;
+
+      #{$Button}__icon {
+        width: 1.5rem;
+        height: 1.5rem;
+      }
+    }
+  }
+
+  // Tertiary variant
+  &--tertiary {
+    background-color: transparent;
+    color: $green-100;
+    gap: $spacing-6;
+
+    &:hover {
+      color: $green-140;
+      text-decoration: underline;
+    }
+
+    &:active {
+      color: $neutral-100;
+      @include active-state;
+    }
+
+    &:focus {
+      @include focus-state;
+    }
+
+    &:active:focus,
+    &:focus:active {
+      color: $neutral-100;
+      @include active-state;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      color: $neutral-60;
+      text-decoration: none;
+    }
+
+    // Tertiary sizes
+    &-small {
+      padding: 0.0625rem 0.125rem;
+      @include label-small;
+
+      #{$Button}__icon {
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+    }
+
+    &-large {
+      padding: 0.125rem 0.25rem;
+      @include label-default;
+
+      #{$Button}__icon {
+        width: 1.25rem;
+        height: 1.25rem;
+      }
+    }
+  }
+
+  // Icon only variant
+  &--icon-only {
+    background-color: transparent;
+    color: $green-100;
+    padding: 0.625rem;
+    min-width: 0;
+    border: none;
+
+    #{$Button}__icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    &:hover {
+      background-color: $neutral-10;
+    }
+
+    &:active {
+      background-color: $green-100;
+      color: $white;
+      @include active-state;
+    }
+
+    &:focus {
+      background-color: $green-100;
+      color: $white;
+      @include focus-state;
+    }
+
+    &:active:focus,
+    &:focus:active {
+      background-color: $green-100;
+      color: $white;
+      @include active-state;
+    }
+
+    &:disabled,
+    &[aria-disabled='true'] {
+      background-color: $neutral-60;
+      color: $white;
+    }
+  }
+}

@@ -1,0 +1,80 @@
+.troop-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  height: 52px;
+  padding: 0 var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-input-bg);
+  transition: border-color 0.15s ease;
+}
+
+.troop-search-wrap:focus-within {
+  border-color: var(--color-primary);
+}
+
+.troop-search-wrap--error {
+  border-color: var(--color-error);
+}
+
+.troop-search-icon {
+  flex-shrink: 0;
+}
+
+.troop-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+}
+
+.troop-search-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.troop-search-input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.troop-search-continue {
+  display: flex;
+  justify-content: center;
+  margin-top: calc(-1 * var(--space-lg));
+}
+
+.troop-search-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  margin-top: 4px;
+}
+
+.troop-search-alt-btns {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+.troop-search-alt-btn {
+  flex: 1;
+  background: rgba(0, 86, 64, 0.08);
+  border: none;
+  border-radius: var(--border-radius-md);
+  color: var(--color-primary);
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  padding: 14px var(--space-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.troop-search-alt-btn:hover {
+  background: rgba(0, 86, 64, 0.14);
+}

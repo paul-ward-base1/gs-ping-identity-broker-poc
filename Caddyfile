@@ -1,0 +1,38 @@
+{
+	# HTTP/2's framing doesn't support the classic Connection:Upgrade
+	# handshake that Next.js/Vite dev servers use for their HMR WebSocket.
+	# Over h2 (which Caddy otherwise advertises via ALPN) the upgrade
+	# silently fails and falls through to the app as a plain GET (404),
+	# instead of switching protocols. Forcing h1 avoids that for every
+	# proxied dev server here.
+	servers {
+		protocols h1
+	}
+}
+
+girlscoutsshop.local {
+	reverse_proxy localhost:3100
+	tls internal
+}
+
+my-gs.local {
+	reverse_proxy localhost:3200
+	tls internal
+}
+
+gsregistration.local {
+	reverse_proxy localhost:3300
+	tls internal
+}
+
+leadertools.local {
+	reverse_proxy localhost:3000
+	tls internal
+}
+
+# Browser-only POC authorization proxy. PingOne redirects the browser here;
+# the route adds prompt=login before continuing to Gigya.
+cdc-login.gsusa.local {
+	reverse_proxy localhost:3000
+	tls internal
+}

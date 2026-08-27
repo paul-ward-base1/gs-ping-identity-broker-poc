@@ -1,0 +1,90 @@
+.renew-cart-items {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.renew-cart-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-white);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.renew-cart-item:last-child {
+  border-bottom: none;
+}
+
+.renew-cart-item--fee {
+  background: var(--color-card-bg);
+}
+
+.renew-cart-item-icon {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--border-radius-md);
+  background: rgba(92, 31, 139, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.renew-cart-item-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.renew-cart-item-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.renew-cart-item-member {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.renew-cart-item-duration {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.renew-cart-item-price {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  white-space: nowrap;
+}
+
+.renew-cart-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+}
+
+.renew-cart-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.renew-cart-row--total {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}

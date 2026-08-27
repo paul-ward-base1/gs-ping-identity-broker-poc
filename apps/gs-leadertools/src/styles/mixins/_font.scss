@@ -1,0 +1,189 @@
+//https://www.figma.com/design/2QALvagVrlfRrLTjIQ94Hq/GSUSA---Content-Library?node-id=661-26995&m=dev
+
+@use '../variables' as *;
+@use 'breakpoints' as *;
+
+@mixin font-styles(
+  $fontSize,
+  $fontWeight: null,
+  $lineHeight: null,
+  $fontFamily: $font-family-gs,
+  $letterSpacing: null,
+  $textTransform: none
+) {
+  font-family: $fontFamily;
+  font-size: $fontSize;
+  font-weight: $fontWeight;
+  line-height: $lineHeight;
+  text-transform: $textTransform;
+  letter-spacing: $letterSpacing;
+}
+
+// headline
+@mixin headline-large($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(2.5rem, 700, normal);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(3rem, 700, normal);
+    }
+  }
+}
+
+@mixin headline-medium($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(2rem, 700, normal);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(2.5rem, 700, normal);
+    }
+  }
+}
+
+@mixin headline-small($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(1.75rem, 700, normal);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(2rem, 700, normal);
+    }
+  }
+}
+
+@mixin headline-xsmall($breakpoint: null) {
+  @include font-styles(1.5rem, 700, normal);
+}
+
+// titles
+@mixin title-xlarge($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(1.5rem, 600, normal, $font-family-poppins);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(1.75rem, 600, normal, $font-family-poppins);
+    }
+  }
+}
+
+@mixin title-large($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(1.125rem, 600, normal, $font-family-poppins);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(1.5rem, 600, normal, $font-family-poppins);
+    }
+  }
+}
+
+@mixin title-medium-serif($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(1rem, 700, normal);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(1.25rem, 700, normal);
+    }
+  }
+}
+
+@mixin title-medium($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(1rem, 600, normal, $font-family-poppins);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(1.125rem, 600, normal, $font-family-poppins);
+    }
+  }
+}
+
+@mixin title-small($breakpoint: null) {
+  @if not $breakpoint or $breakpoint == mobile {
+    @include font-styles(0.875rem, 600, normal, $font-family-poppins);
+  }
+
+  @if not $breakpoint or $breakpoint == tablet-large {
+    @include breakpoint(tablet-large) {
+      @include font-styles(1rem, 600, normal, $font-family-poppins);
+    }
+  }
+}
+
+@mixin title-xsmall-serif($breakpoint: null) {
+  @include font-styles(0.875rem, 600, normal, $font-family-poppins);
+}
+
+@mixin title-xsmall($breakpoint: null) {
+  @include font-styles(0.875rem, 600, normal, $font-family-poppins);
+}
+
+// body
+@mixin body-large($breakpoint: null) {
+  @include font-styles(1.125rem, 300, normal, $font-family-poppins);
+}
+
+@mixin body-large-strong($breakpoint: null) {
+  @include font-styles(1.125rem, 400, normal, $font-family-poppins);
+}
+
+@mixin body-default($breakpoint: null) {
+  @include font-styles(1rem, 300, normal, $font-family-poppins);
+}
+
+@mixin body-default-strong($breakpoint: null) {
+  @include font-styles(1rem, 400, normal, $font-family-poppins);
+}
+
+@mixin body-small($breakpoint: null) {
+  @include font-styles(0.875rem, 300, normal, $font-family-poppins);
+}
+
+@mixin body-small-strong($breakpoint: null) {
+  @include font-styles(0.875rem, 400, normal, $font-family-poppins);
+}
+
+// labels
+@mixin label-large($breakpoint: null) {
+  @include font-styles(1.125rem, 600, normal, $font-family-poppins, 0.03125rem);
+}
+
+@mixin label-default($breakpoint: null) {
+  @include font-styles(1rem, 600, normal, $font-family-poppins, 0.03125rem);
+}
+
+@mixin label-small($breakpoint: null) {
+  @include font-styles(0.875rem, 600, normal, $font-family-poppins, 0.03125rem);
+}
+
+@mixin label-xsmall($breakpoint: null) {
+  @include font-styles(0.75rem, 600, normal, $font-family-poppins, 0.03125rem, capitalize);
+}
+
+// metas
+@mixin meta-small($breakpoint: null) {
+  @include font-styles(0.75rem, 600, 1.3125rem, $font-family-poppins, 0.03125rem, uppercase);
+}
+
+@mixin meta-small-sentence-case($breakpoint: null) {
+  @include font-styles(0.75rem, 600, 1.125rem, $font-family-poppins, 0.03125rem);
+}
+
+@mixin meta-xsmall($breakpoint: null) {
+  @include font-styles(0.625rem, 600, normal, $font-family-poppins, 0.03125rem, uppercase);
+}
+
+@mixin meta-xsmall-sentence-case($breakpoint: null) {
+  @include font-styles(0.625rem, 600, normal, $font-family-poppins, 0.03125rem);
+}

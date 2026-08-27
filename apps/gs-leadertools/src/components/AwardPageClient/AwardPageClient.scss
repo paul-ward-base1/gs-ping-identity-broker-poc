@@ -1,0 +1,30 @@
+@include detail-page-layout($AwardDetailsPage);
+
+#{$AwardDetailsPage} {
+  &__steps {
+    width: 100%;
+  }
+
+  &__directive {
+    align-self: center;
+    width: 100%;
+    max-width: 37.2rem;
+  }
+
+  &__toggle-mobile-side-panel {
+    display: flex;
+    width: 100%;
+
+    @include breakpoint(desktop) {
+      display: none;
+    }
+  }
+
+  &__mobile-print {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: flex-end;
+    gap: $spacing-12;
+  }
+}

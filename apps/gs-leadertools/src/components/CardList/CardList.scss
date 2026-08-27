@@ -1,0 +1,19 @@
+#{$CardList} {
+  display: grid;
+  width: 100%;
+  max-width: 75rem;
+  align-items: center;
+  align-self: center;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-column-gap: $spacing-16;
+  grid-row-gap: $spacing-24;
+
+  @include breakpoint(tablet) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @include breakpoint(desktop) {
+    gap: $spacing-24;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

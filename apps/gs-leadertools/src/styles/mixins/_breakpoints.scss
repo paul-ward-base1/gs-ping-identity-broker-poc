@@ -1,0 +1,20 @@
+@use "sass:map";
+
+$breakpoints-map: (
+  mobile: 0,
+  tablet: 576px,
+  tablet-large: 768px,
+  desktop: 1025px,
+);
+
+@mixin breakpoint($breakpoint: medium) {
+  $width: map.get($breakpoints-map, $breakpoint);
+
+  @if $width > 0 {
+    @media screen and (min-width: $width) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}

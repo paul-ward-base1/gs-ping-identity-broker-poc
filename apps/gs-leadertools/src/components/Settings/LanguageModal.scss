@@ -1,0 +1,104 @@
+#{$LanguageSwitcher} {
+  &__overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-16;
+    animation: gs-language-switcher-fade 160ms ease-out;
+  }
+
+  &__modal {
+    background: $white;
+    border-radius: 12px;
+    // Padding lives on the inner sections so the header band can bleed
+    // edge-to-edge; overflow keeps that band clipped to the rounded corners.
+    overflow: hidden;
+    min-width: 18rem; // 288px
+    max-width: 24rem; // 384px
+    width: 100%;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.3);
+    animation: gs-language-switcher-pop 180ms ease-out;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-16;
+    padding: $spacing-16 $spacing-24;
+    background: $neutral-10;
+    border-bottom: 1px solid $neutral-20;
+  }
+
+  &__title {
+    @include title-medium;
+    color: $neutral-90;
+  }
+
+  &__close {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-4;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    color: $green-100;
+    font-size: 0.6875rem; // 11px
+    font-weight: 700;
+    letter-spacing: 0.05rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: $spacing-4;
+
+    svg {
+      width: 1rem; // 16px
+      height: 1rem; // 16px
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-color;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-14;
+    padding: $spacing-24;
+  }
+}
+
+@keyframes gs-language-switcher-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gs-language-switcher-pop {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #{$LanguageSwitcher} {
+    &__overlay,
+    &__modal {
+      animation: none;
+    }
+  }
+}

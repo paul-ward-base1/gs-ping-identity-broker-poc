@@ -1,0 +1,111 @@
+#{$AccordionItem} {
+  display: flex;
+  padding: 0 $spacing-16;
+  flex-direction: column;
+  gap: $spacing-16;
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-8;
+    align-self: stretch;
+  }
+
+  &__data {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $spacing-4;
+    flex: 1 0 0;
+  }
+
+  &__title-row {
+    display: flex;
+    align-items: center;
+    gap: $spacing-8;
+    align-self: stretch;
+  }
+
+  &__bullet {
+    flex: 0 0 auto;
+    width: 0.625rem;
+    height: 0.625rem;
+    border-radius: 50%;
+    background-color: $primary;
+    align-self: center;
+  }
+
+  &__title {
+    @include title-medium;
+  }
+
+  &__clock {
+    width: 1rem;
+    height: 1rem;
+    aspect-ratio: 1/1;
+    color: $tertiary;
+  }
+
+  &__description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: $spacing-4;
+    align-self: flex-start;
+
+    @include breakpoint(tablet-large) {
+      flex-direction: row;
+      display: flex;
+      align-items: center;
+      gap: $spacing-6;
+    }
+  }
+
+  &__timing {
+    @include meta-small;
+
+    display: flex;
+    align-items: center;
+    gap: $spacing-6;
+    color: $neutral-70;
+    justify-content: center;
+  }
+
+  &__divider {
+    display: none;
+
+    @include breakpoint(tablet-large) {
+      display: flex;
+      width: 0.125rem;
+      height: 0.625rem;
+      border-radius: 100px;
+      background-color: $neutral-20;
+    }
+  }
+
+  &__tags {
+    display: flex;
+    align-items: center;
+    gap: $spacing-6;
+    flex-flow: row wrap;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: $spacing-24;
+  }
+
+  &__mobile-icon {
+    display: flex;
+    color: $tertiary;
+    width: 1.25rem; // 20px
+    height: 1.25rem; // 20px
+    align-items: center;
+
+    @include breakpoint(desktop) {
+      display: none;
+    }
+  }
+}

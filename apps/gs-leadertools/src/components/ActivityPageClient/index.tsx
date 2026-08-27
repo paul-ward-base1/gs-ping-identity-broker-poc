@@ -1,0 +1,1 @@
+export { ActivityPageClient } from './ActivityPageClient';

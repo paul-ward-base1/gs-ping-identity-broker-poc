@@ -1,0 +1,111 @@
+.splash-screen {
+  min-height: 100vh;
+}
+
+.splash-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+}
+
+.splash-img-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.splash-img {
+  width: 100%;
+  min-height: 280px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.splash-img-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.splash-img-watermark {
+  font-family: var(--font-family);
+  font-size: clamp(18px, 5vw, 36px);
+  font-weight: var(--font-weight-bold);
+  color: rgba(255, 255, 255, 0.92);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  padding: 0 var(--space-md);
+}
+
+.splash-content {
+  width: 100%;
+  padding: var(--space-lg) var(--space-md);
+  display: flex;
+  flex-direction: column;
+}
+
+.splash-heading {
+  text-align: left;
+}
+
+.splash-subheading {
+  font-family: var(--font-family-serif);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-black);
+  line-height: 1.3;
+}
+
+.splash-text {
+  font-family: var(--font-family-serif);
+  font-size: 17px;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-dark);
+  line-height: 1.6;
+}
+
+.splash-spacer {
+  height: var(--space-md);
+}
+
+.splash-cta {
+  display: flex;
+  justify-content: center;
+}
+
+.splash-join-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px var(--space-xl);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.splash-join-btn:hover {
+  background: #004530;
+}
+
+@media (min-width: 768px) {
+  .splash-img {
+    min-height: 400px;
+  }
+
+  .splash-content {
+    max-width: 680px;
+    padding: var(--space-xl);
+  }
+}

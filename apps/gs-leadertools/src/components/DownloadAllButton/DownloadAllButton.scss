@@ -1,0 +1,50 @@
+#{$DownloadAllButton} {
+  display: none;
+  align-items: center;
+  gap: $spacing-6;
+
+  @media (hover: hover) and (pointer: fine) {
+    display: inline-flex;
+  }
+  background-color: transparent;
+  border: none;
+  padding: $spacing-6 $spacing-8;
+  border-radius: $spacing-8;
+  cursor: pointer;
+  color: $tertiary;
+  @include label-default;
+  transition: 0.2s ease-in;
+
+  &__icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: inherit;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  &:hover {
+    background-color: $neutral-10;
+  }
+
+  &:focus-visible {
+    @include focus-state;
+  }
+
+  &--inline {
+    white-space: nowrap;
+  }
+
+  &--footer {
+    width: calc(100% - #{$spacing-16} * 2);
+    margin: $spacing-8 $spacing-16 0;
+    justify-content: center;
+    padding: $spacing-10 $spacing-16;
+    border-top: 1px solid $neutral-20;
+    border-radius: 0;
+  }
+}

@@ -1,0 +1,1 @@
+export { BadgePageClient } from './BadgePageClient';

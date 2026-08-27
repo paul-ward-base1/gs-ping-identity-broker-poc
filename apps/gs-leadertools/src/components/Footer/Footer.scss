@@ -1,0 +1,35 @@
+#{$Footer} {
+  display: flex;
+  padding: $spacing-16;
+  flex-direction: column;
+  width: 100%;
+  background-color: $primary;
+  gap: $spacing-4;
+
+  @media print {
+    display: none;
+  }
+
+  @include breakpoint(desktop) {
+    padding: $spacing-24 $spacing-64;
+    gap: $spacing-6;
+    align-items: flex-start;
+    flex-flow: row wrap;
+  }
+
+  &__copyright {
+    @include body-small-strong;
+
+    @include breakpoint(desktop) {
+      @include body-default-strong;
+    }
+  }
+
+  &__text {
+    @include body-small;
+
+    @include breakpoint(desktop) {
+      @include body-default;
+    }
+  }
+}

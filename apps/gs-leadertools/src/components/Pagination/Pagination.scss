@@ -1,0 +1,38 @@
+#{$Pagination} {
+  display: flex;
+  width: 100%;
+  padding: $spacing-16;
+  justify-content: flex-end;
+  align-items: center;
+  gap: $spacing-8;
+  background-color: $white;
+
+  @include breakpoint(tablet-large) {
+    padding: $spacing-24 7.5rem;
+  }
+
+  &__label {
+    @include label-xsmall;
+
+    color: $neutral-80;
+    display: flex;
+    gap: $spacing-5;
+    align-items: center;
+    flex-flow: row wrap;
+  }
+
+  &__results {
+    @include label-xsmall;
+
+    color: $tertiary;
+  }
+
+  #{$Button} {
+    padding: $spacing-4 $spacing-12;
+
+    &:disabled {
+      background-color: $white;
+      color: $neutral-20;
+    }
+  }
+}

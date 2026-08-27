@@ -1,0 +1,76 @@
+.text-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.text-field-input-wrap {
+  position: relative;
+  height: 56px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-input-bg);
+  transition: border-color 0.15s ease;
+}
+
+.text-field-input-wrap:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 86, 64, 0.12);
+}
+
+.text-field--error .text-field-input-wrap {
+  border-color: var(--color-error);
+}
+
+.text-field--error .text-field-input-wrap:focus-within {
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.12);
+}
+
+.text-field-input {
+  width: 100%;
+  height: 100%;
+  padding: 22px 12px 6px;
+  border: none;
+  background: transparent;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  outline: none;
+}
+
+.text-field-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+/* Float label when input has value or is focused */
+.text-field-input:focus + .text-field-label,
+.text-field-input:not(:placeholder-shown) + .text-field-label {
+  top: 10px;
+  transform: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+}
+
+.text-field--error .text-field-input:focus + .text-field-label,
+.text-field--error .text-field-input:not(:placeholder-shown) + .text-field-label {
+  color: var(--color-error);
+}
+
+.text-field-message {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  padding-left: 14px;
+}
+
+.text-field-message--error {
+  color: var(--color-error);
+}

@@ -1,0 +1,198 @@
+.renew-account-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-md);
+  background: linear-gradient(135deg, #5C1F8B 0%, #7B2FBE 100%);
+}
+
+.renew-account-avatar {
+  width: 52px;
+  height: 52px;
+  min-width: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  letter-spacing: 0.5px;
+}
+
+.renew-account-welcome {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2px;
+}
+
+.renew-account-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: white;
+  line-height: 1.2;
+}
+
+.renew-account-council {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 2px;
+}
+
+.renew-account-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
+  flex: 1;
+}
+
+/* Alert */
+.renew-account-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(220, 53, 69, 0.07);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  border-radius: var(--border-radius-md);
+  color: #991b1b;
+}
+
+.renew-account-alert-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 2px;
+}
+
+.renew-account-alert-desc {
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+.renew-account-section-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Membership list */
+.renew-membership-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.renew-membership-card {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  border: 1.5px solid var(--color-border);
+}
+
+.renew-membership-card--expired {
+  border-color: rgba(220, 53, 69, 0.3);
+}
+
+.renew-membership-card--expiring-soon {
+  border-color: rgba(180, 83, 9, 0.3);
+}
+
+.renew-membership-card--active {
+  border-color: rgba(0, 86, 64, 0.3);
+}
+
+.renew-membership-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.renew-membership-card--expired .renew-membership-card-header {
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.renew-membership-card--expiring-soon .renew-membership-card-header {
+  background: rgba(180, 83, 9, 0.05);
+}
+
+.renew-membership-card--active .renew-membership-card-header {
+  background: rgba(0, 86, 64, 0.05);
+}
+
+.renew-membership-card-icon {
+  color: var(--color-text-muted);
+}
+
+.renew-status-badge {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  padding: 2px 9px;
+  border-radius: var(--border-radius-pill);
+}
+
+.renew-status-badge--expired {
+  background: rgba(220, 53, 69, 0.1);
+  color: #991b1b;
+}
+
+.renew-status-badge--expiring-soon {
+  background: rgba(180, 83, 9, 0.1);
+  color: #92400e;
+}
+
+.renew-status-badge--active {
+  background: rgba(0, 86, 64, 0.1);
+  color: var(--color-primary);
+}
+
+.renew-membership-card-body {
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.renew-membership-card-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.renew-membership-card-member {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.renew-membership-card-id {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-family: monospace;
+  letter-spacing: 0.5px;
+}
+
+.renew-membership-card-expiry {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  margin-top: 4px;
+}
+
+.renew-membership-card-expiry--expired { color: #991b1b; }
+.renew-membership-card-expiry--expiring-soon { color: #92400e; }
+.renew-membership-card-expiry--active { color: var(--color-primary); }
+
+.renew-account-secondary {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

@@ -1,0 +1,67 @@
+@use 'variables' as *;
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  font-family: $font-family-gs;
+  line-height: $font-height;
+  min-height: 100%;
+  color: $neutral-100;
+}
+
+html {
+  overflow-x: clip;
+}
+
+body,
+main {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow-x: clip;
+}
+
+body {
+  grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+main {
+  min-height: 0;
+}
+
+p,
+div,
+ul,
+li {
+  margin: 0;
+}
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: $max-width;
+  margin: 0 auto;
+}
+
+.blockScroll {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  scroll-behavior: unset;
+}
+
+html:has(body.blockScroll) {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+.hidden {
+  display: none;
+}

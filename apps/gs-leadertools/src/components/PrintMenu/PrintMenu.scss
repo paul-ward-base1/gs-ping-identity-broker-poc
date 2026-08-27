@@ -1,0 +1,47 @@
+#{$PrintMenu} {
+  position: relative;
+  display: inline-flex;
+
+  // Animate the trigger's caret as the menu opens / closes.
+  .gs-button__icon {
+    transition: transform 0.2s ease;
+  }
+
+  &--open {
+    .gs-button__icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + #{$spacing-4});
+    right: 0;
+    z-index: 20;
+    min-width: 6rem;
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-4;
+    background-color: $white;
+    border: 1px solid $neutral-20;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  &__option {
+    width: 100%;
+    padding: $spacing-8 $spacing-12;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    font-size: 0.875rem;
+    line-height: 1.2;
+    color: $neutral-100;
+
+    &:hover {
+      background-color: $neutral-10;
+    }
+  }
+}

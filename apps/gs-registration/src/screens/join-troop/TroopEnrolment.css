@@ -1,0 +1,105 @@
+.troop-info-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+}
+
+.troop-info-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.troop-info-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.troop-info-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+.troop-info-leader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  padding-top: var(--space-xs);
+  border-top: 1px solid var(--color-border);
+}
+
+.troop-info-leader-label {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+}
+
+.troop-details-card {
+  margin-top: var(--space-sm);
+  background: rgba(0, 86, 64, 0.08);
+  border-radius: var(--border-radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.troop-details-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.troop-details-name {
+  font-size: 21px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  margin: 0;
+  padding-bottom: var(--space-sm);
+}
+
+.troop-details-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.troop-details-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.troop-details-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+}
+
+.troop-details-label {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.troop-details-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 2px 0;
+}
+
+.radio-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}

@@ -1,0 +1,166 @@
+/* Fonts */
+$font-family-gs: 'Girl Scout', sans-serif;
+$font-family-poppins: 'Poppins', sans-serif;
+$font-family-avenir: 'Avenir Next', sans-serif;
+
+$font-size: 1rem; // 16px
+$font-height: normal;
+$max-width: 90rem; // 1440px
+
+/* Colors */
+$primary: #00b451;
+$secondary: #006b50;
+$border-color: #4d8979;
+$tertiary: #5c1f8b;
+$white: #ffffff;
+
+$black: #000;
+$neutral-100: #212529;
+$neutral-90: #373b3e;
+$neutral-80: #4d5154;
+$neutral-70: #646669;
+$neutral-60: #7a7c7f;
+$neutral-20: #d3d3d4;
+$neutral-10: #f5f5f5;
+
+$river-100: #1597d4;
+$brown-100: #753b16;
+$poppy-100: #e22f22;
+$flame-100: #fe8209;
+$gold-100: #f9bf03;
+
+$sky-100: #a0def1;
+$sky-30: #d9f2f9;
+$sky-20: #ecf8fc;
+$sky-10: #f5fcfe;
+
+$khaki-100: #d5ca9f;
+$khaki-30: #eeead9;
+$khaki-20: #f7f4ec;
+$khaki-10: #fbfaf5;
+
+$bubblegum-100: #f7abd6;
+$bubblegum-30: #fcddef;
+$bubblegum-20: #fdeef7;
+$bubblegum-10: #fef7fb;
+
+$crocus-100: #ccb3fa;
+$crocus-30: #f0e8fd;
+$crocus-20: #f5f0fe;
+$crocus-10: #faf7fe;
+
+$peach-100: #fcb89d;
+$peach-30: #fee3d8;
+$peach-20: #fef1eb;
+$peach-10: #fff8f5;
+
+$sunshine-100: #fff441;
+$sunshine-30: #fffbb3;
+$sunshine-20: #fffdd9;
+$sunshine-10: #fffeec;
+
+$stargreen-100: #d5f267;
+$seafoam-100: #a1edd5;
+
+$green-140: #004533;
+$green-120: #1e4620;
+$green-100: #006b50;
+$green-10: #edf7ed;
+
+$yellow-160: #663c00;
+$yellow-100: #f7be00;
+$yellow-10: #fff4e5;
+
+$red-160: #5b0b18;
+$red-100: #e31c3d;
+$red-10: #fce8ec;
+
+// Spacing (rem-based)
+$spacing-1: 0.0625rem; // 1px
+$spacing-2: 0.125rem; // 2px
+$spacing-3: 0.188rem; // 3px
+$spacing-4: 0.25rem; // 4px
+$spacing-5: 0.313rem; // 5px
+$spacing-6: 0.375rem; // 6px
+$spacing-8: 0.5rem; // 8px
+$spacing-10: 0.625rem; // 10px
+$spacing-12: 0.75rem; // 12px
+$spacing-13: 0.813rem;
+$spacing-14: 0.875rem; // 14px
+$spacing-16: 1rem; // 16px
+$spacing-18: 1.125rem; // 18px
+$spacing-20: 1.25rem; // 20px
+$spacing-24: 1.5rem; // 24px
+$spacing-32: 2rem; // 32px
+$spacing-40: 2.5rem; // 40px
+$spacing-42: 2.625rem; // 42px
+$spacing-48: 3rem; // 48px
+$spacing-56: 3.5rem; // 56px
+$spacing-64: 4rem; // 64px
+$spacing-72: 4.5rem; // 72px
+$spacing-80: 5rem; // 80px
+$spacing-88: 5.5rem; // 88px
+$spacing-96: 6rem; // 96px
+$spacing-104: 6.5rem; // 104px
+
+$spacing-sizes: (
+  sm: $spacing-24,
+  md: $spacing-40,
+  lg: $spacing-64,
+  xl: $spacing-80,
+);
+
+//components
+
+$Accordion: '.gs-accordion';
+$AccordionItem: '.gs-accordion-item';
+$ActivityDetailsPage: '.gs-activity-details-page';
+$ActivityPreview: '.gs-activity-preview';
+$AwardDetailsPage: '.gs-award-details-page';
+$AwardStep: '.gs-award-step';
+$AwardSteps: '.gs-award-steps';
+$BadgeDetailsPage: '.gs-badge-details-page';
+$BadgeStep: '.gs-badge-step';
+$BadgeSteps: '.gs-badge-steps';
+$Breadcrumb: '.gs-breadcrumb';
+$Button: '.gs-button';
+$Callout: '.gs-callout';
+$DownloadButton: '.gs-download-button';
+$DownloadAllButton: '.gs-download-all-button';
+$Card: '.gs-card';
+$CardList: '.gs-card-list';
+$Choice: '.gs-choice';
+$ChoiceGroup: '.gs-choice-group';
+$ClosingQuestion: '.gs-closing-question';
+$DetailPageHero: '.gs-detail-page-hero';
+$DirectiveContent: '.gs-directive-content';
+$DetailPageHeroContent: '.gs-detail-page-hero-content';
+$DetailPageLayout: '.gs-detail-page-layout';
+$DonorRecognition: '.gs-donor-recognition';
+$Dropdown: '.gs-dropdown';
+$Filter: '.gs-filter';
+$FilterChips: '.gs-filter-chips';
+$Footer: '.gs-footer';
+$Handout: '.gs-handout';
+$Handouts: '.gs-handouts';
+$Header: '.gs-header';
+$LandingPage: '.gs-landing';
+$LanguageSwitcher: '.gs-language-switcher';
+$Modal: '.gs-modal';
+$OutlinedCard: '.gs-outlined-card';
+$PageBanner: '.gs-page-banner';
+$Pagination: '.gs-pagination';
+$PrintLoadingOverlay: '.gs-print-loading-overlay';
+$PrintMenu: '.gs-print-menu';
+$RelatedBadge: '.gs-related-badge';
+$RichText: '.gs-rich-text';
+$SearchBox: '.gs-search-box';
+$Settings: '.gs-settings';
+$SidePanel: '.gs-side-panel';
+$SideRail: '.gs-side-rail';
+$SideRailBox: '.gs-side-rail-box';
+$StatusMessage: '.gs-status-message';
+$Supply: '.gs-supply';
+$Tabs: '.gs-tabs';
+$Tag: '.gs-tag';
+$Tooltip: '.gs-tooltip';

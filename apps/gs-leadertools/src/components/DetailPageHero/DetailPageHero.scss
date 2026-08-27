@@ -1,0 +1,110 @@
+#{$DetailPageHero} {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-32 $spacing-16;
+  overflow: hidden;
+  width: calc(100% + 2 * $spacing-16);
+  height: 100%;
+  margin-left: -$spacing-16;
+  margin-right: -$spacing-16;
+
+  @include breakpoint(tablet-large) {
+    padding: $spacing-32 $spacing-64;
+    min-height: 37rem;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 1 0 0;
+    align-self: stretch;
+    gap: $spacing-16;
+    z-index: 1;
+  }
+
+  &__top-shape {
+    position: absolute;
+    width: 21.09rem;
+    height: 21.09rem;
+
+    top: calc(-28% + (80% - 20rem) * 0.05);
+    left: calc(-40% + (80% - 20rem) * 0.4);
+
+    @include breakpoint(tablet-large) {
+      left: calc(-35% + (80% - 20rem) * 0.4);
+    }
+  }
+
+  &__bottom-shape {
+    position: absolute;
+    width: 21.09rem;
+    height: 21.09rem;
+
+    top: 76%;
+    left: calc(-35% + (80% - 20rem) * 0.6);
+
+    @include breakpoint(tablet-large) {
+      top: 75%;
+    }
+  }
+
+  &__first-dash-trail {
+    position: absolute;
+    width: 100%;
+
+    top: 28%;
+    left: calc(-37% + (80% - 20rem) * 0.4);
+
+    @include breakpoint(tablet-large) {
+      top: -1%;
+      left: calc(0% - (80% - 64rem) * 0.9);
+    }
+  }
+
+  &__second-dash-trail {
+    position: absolute;
+    width: 27.28rem;
+
+    top: 12%;
+    left: calc(15% + (80% - 20rem) * 0.6);
+
+    @include breakpoint(tablet-large) {
+      width: 100%;
+      top: 40%;
+      left: calc(-50% - (80% - 64rem) * 0.1);
+    }
+  }
+
+  &__third-dash-trail {
+    display: none;
+    position: absolute;
+    width: 100%;
+
+    @include breakpoint(tablet-large) {
+      display: block;
+      top: 80%;
+      left: calc(-16% + (80% - 20rem) * 0.9);
+    }
+  }
+
+  &__top-shape,
+  &__bottom-shape,
+  &__first-dash-trail,
+  &__second-dash-trail,
+  &__third-dash-trail {
+    &--level {
+      @include all-level-shapes;
+    }
+  }
+
+  &--level {
+    @include all-page-levels-background;
+  }
+}

@@ -1,0 +1,47 @@
+#{$Handouts} {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: $spacing-24;
+  width: 100%;
+  max-width: 37.2rem;
+  padding-bottom: 3.5rem;
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-14;
+
+    @include breakpoint(tablet-large) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  &__title {
+    @include headline-xsmall;
+    margin: 0;
+
+    @include breakpoint(tablet-large) {
+      @include headline-small;
+    }
+  }
+
+  &__items {
+    display: flex;
+    gap: $spacing-16;
+    align-items: stretch;
+    flex-flow: row wrap;
+
+    @include breakpoint(tablet-large) {
+      flex-flow: row wrap;
+      justify-content: flex-start;
+      align-items: stretch;
+      > * {
+        flex: 1 1 calc(50% - $spacing-8);
+        max-width: calc(50% - $spacing-8);
+      }
+    }
+  }
+}

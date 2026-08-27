@@ -1,0 +1,37 @@
+#{$BadgeSteps} {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: $spacing-32;
+
+  @include breakpoint(desktop) {
+    gap: $spacing-40;
+  }
+  @media print {
+    page-break-before: always;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-8;
+  }
+
+  &__title {
+    @include headline-xsmall;
+
+    @include breakpoint(desktop) {
+      @include headline-small;
+    }
+  }
+
+  &__description {
+    @include body-default;
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-32;
+  }
+}

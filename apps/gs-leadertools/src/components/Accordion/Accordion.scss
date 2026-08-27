@@ -1,0 +1,154 @@
+#{$Accordion} {
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.75rem;
+  border: 1px solid $neutral-70;
+  align-items: flex-start;
+
+  &--open {
+    #{$Accordion} {
+      &__header {
+        border-radius: 0.75rem 0.75rem 0 0;
+      }
+
+      &__icon {
+        transform: rotate3d(0, 0, 1, -180deg);
+        transition: transform 0.3s ease;
+      }
+
+      &__content {
+        // Step accordions can hold long copy, images, callouts, and nested
+        // modules — 1000px clipped tall sections. Keep an upper bound so the
+        // open/close transition still animates, but make it large enough that
+        // realistic content fits.
+        max-height: 500rem;
+        opacity: 1;
+        padding: $spacing-24 0;
+        gap: $spacing-24;
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    padding: $spacing-12 $spacing-16;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    background-color: $crocus-30;
+    border: none;
+    border-radius: 12px;
+    transition: border-radius 0.3s ease-in-out;
+    width: 100%;
+    color: $neutral-100;
+
+    &--level {
+      @include all-page-levels-background;
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      #{$Accordion}__icon {
+        outline: 2px solid $border-color;
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__data {
+    display: flex;
+    align-items: center;
+    gap: $spacing-8;
+  }
+
+  &__title {
+    @include title-medium;
+
+    @include breakpoint(tablet-large) {
+      @include title-small;
+    }
+  }
+
+  &__count {
+    @include meta-small;
+
+    display: flex;
+    width: 1.125rem;
+    height: 1.125rem;
+    padding: $spacing-3;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-8;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+    color: $white;
+    border-radius: 50%;
+    background-color: $tertiary;
+  }
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1.25rem; // 20px
+    height: 1.25rem; // 20px
+    color: $primary;
+    transition: transform 0.3s ease;
+  }
+
+  &__content {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: stretch;
+    padding-bottom: 0;
+    gap: 0;
+
+    // richText-variant bodies are a bare RichText — match the default
+    // AccordionItem's horizontal padding.
+    > #{$RichText} {
+      padding: 0 $spacing-24;
+
+      // Replace the native ::marker (positioned by baseline, off-center for
+      // multi-line items) with a `::before` dot we vertically center.
+      ul {
+        list-style: none;
+        padding-left: 0;
+
+        li {
+          display: flex;
+          align-items: flex-start;
+          gap: $spacing-8;
+
+          &::before {
+            content: '';
+            flex: 0 0 auto;
+            width: 0.625rem;
+            height: 0.625rem;
+            border-radius: 50%;
+            background-color: $primary;
+            align-self: center;
+          }
+        }
+      }
+    }
+
+    @media print {
+      page-break-inside: auto;
+      page-break-after: auto;
+      page-break-before: auto;
+    }
+  }
+
+  &__separator {
+    width: 100%;
+    height: 0.0625rem;
+    background-color: $neutral-20;
+  }
+}

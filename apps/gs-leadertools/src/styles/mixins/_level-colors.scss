@@ -1,0 +1,82 @@
+@use '../variables' as *;
+
+@mixin level-style($level, $bg-color, $text-color: null, $icon-color: null) {
+  &-#{$level} {
+    background-color: $bg-color;
+
+    @if $text-color != null {
+      color: $text-color;
+    }
+
+    @if $icon-color != null {
+      svg {
+        color: $icon-color;
+      }
+    }
+  }
+}
+
+@mixin all-level-styles {
+  @include level-style('daisy', $river-100, $neutral-100, $white);
+  @include level-style('brownie', $brown-100);
+  @include level-style('junior', $tertiary, $white, $crocus-100);
+  @include level-style('cadette', $poppy-100);
+  @include level-style('senior', $flame-100, $neutral-100, $white);
+  @include level-style('ambassador', $gold-100, $neutral-100, $neutral-100);
+  @include level-style('All', $green-100);
+  @include level-style('multi', $neutral-10, $neutral-100, $tertiary);
+}
+
+@mixin all-page-levels-background {
+  @include level-style('daisy', $sky-10);
+  @include level-style('brownie', $khaki-10);
+  @include level-style('junior', $crocus-10);
+  @include level-style('cadette', $bubblegum-10);
+  @include level-style('senior', $peach-10);
+  @include level-style('ambassador', $sunshine-10);
+  @include level-style('multi', $neutral-10);
+}
+
+@mixin scrollbar-by-level($level, $track-color, $thumb-color) {
+  &-#{$level} {
+    &::-webkit-scrollbar {
+      width: $spacing-6;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $track-color;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $thumb-color;
+      border-radius: 10px;
+      border: none;
+    }
+  }
+}
+
+@mixin all-levels-scrollbar {
+  @include scrollbar-by-level('daisy', $sky-30, $sky-100);
+  @include scrollbar-by-level('brownie', $khaki-30, $khaki-100);
+  @include scrollbar-by-level('junior', $crocus-30, $crocus-100);
+  @include scrollbar-by-level('cadette', $bubblegum-30, $bubblegum-100);
+  @include scrollbar-by-level('senior', $peach-30, $peach-100);
+  @include scrollbar-by-level('ambassador', $sunshine-30, $sunshine-100);
+  @include scrollbar-by-level('multi', $white, $neutral-20);
+}
+
+@mixin shape-style($level, $color) {
+  &-#{$level} {
+    color: $color;
+  }
+}
+
+@mixin all-level-shapes {
+  @include shape-style('daisy', $sky-30);
+  @include shape-style('brownie', $khaki-30);
+  @include shape-style('junior', $crocus-30);
+  @include shape-style('cadette', $bubblegum-30);
+  @include shape-style('senior', $peach-30);
+  @include shape-style('ambassador', $sunshine-30);
+  @include shape-style('multi', $white);
+}

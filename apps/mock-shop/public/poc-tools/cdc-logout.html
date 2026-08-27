@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signing out...</title>
+  <script src="https://cdns.us1.gigya.com/js/gigya.js?apikey=3_YoJzW6wU2ztZGfCO9kiWJybg7MzyR7im1O9zDUGiVGqjofalYsOmdLtL9ULdjQG5"></script>
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#666;background:#f9fafb;">
+  <p id="status">Signing out...</p>
+  <script>
+    var redirectUrl = new URLSearchParams(window.location.search).get("redirect") || "/";
+    var logoutDone = false;
+
+    function doRedirect() {
+      if (!logoutDone) {
+        logoutDone = true;
+        window.location.replace(redirectUrl);
+      }
+    }
+
+    function onGigyaServiceReady() {
+      // Try accounts.logout first
+      try {
+        gigya.accounts.logout({
+          callback: function (response) {
+            console.log("CDC logout response:", response);
+            doRedirect();
+          }
+        });
+      } catch (e) {
+        console.log("CDC logout error:", e);
+        doRedirect();
+      }
+
+      // Also try socialize.logout as backup
+      try {
+        gigya.socialize.logout({
+          callback: function () {
+            console.log("CDC socialize logout done");
+          }
+        });
+      } catch (e) { /* ignore */ }
+    }
+
+    // Fallback: redirect after 3 seconds regardless
+    setTimeout(doRedirect, 3000);
+  </script>
+</body>
+</html>

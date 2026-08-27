@@ -1,0 +1,101 @@
+# Build the backend Docker image, push it to ECR, then chain into the
+# shared roll-app reusable workflow in gs-infra-config to force-redeploy
+# the dev ECS service. Replaces the legacy builder.Jenkinsfile.
+#
+# Path B: the task definition references a floating tag
+# (gsbadges-dev-latest); each build overwrites that tag in ECR and a
+# forced redeployment makes ECS re-pull it. No terraform, no state
+# lock, no IAM PassRole — builder credentials are enough. The
+# (env → cluster/service) mapping lives in gs-infra-config/roll-app.yml
+# so this repo doesn't have to know the terraform naming convention.
+#
+# Image is built env-agnostically (per VTKN-478, per-env values are
+# injected at runtime via the ECS task definition, not baked at docker
+# build time). Three tags are pushed per run:
+#   * gsbadges-[<branch>-]latest             — floating tag (what the task def references)
+#   * gsbadges-[<branch>-]<YYYYMMDD>         — per-day floating tag
+#   * gsbadges-[<branch>-]<YYYYMMDD>-<n>     — pinned, for traceability
+# The <branch>- segment is omitted on main and slashes in branch names
+# are flattened to dashes (e.g. feature/foo → feature-foo).
+name: build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPO: 700429256712.dkr.ecr.us-east-1.amazonaws.com/gs-vtk-images
+  IMAGE_NAME: gsbadges
+
+jobs:
+  build:
+    name: Build & push
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.tags.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute tags
+        id: tags
+        run: |
+          branch="${GITHUB_REF#refs/heads/}"
+          if [ "$branch" = "main" ]; then
+            prefix=""
+          else
+            prefix="${branch//\//-}-"
+          fi
+          date=$(date +%Y%m%d)
+          version="${prefix}${date}-${{ github.run_number }}"
+          {
+            echo "version=${version}"
+            echo "tag_latest=${IMAGE_NAME}-${prefix}latest"
+            echo "tag_date=${IMAGE_NAME}-${prefix}${date}"
+            echo "tag_pinned=${IMAGE_NAME}-${version}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build & push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.ECR_REPO }}:${{ steps.tags.outputs.tag_latest }}
+            ${{ env.ECR_REPO }}:${{ steps.tags.outputs.tag_date }}
+            ${{ env.ECR_REPO }}:${{ steps.tags.outputs.tag_pinned }}
+          build-args: |
+            GIT_COMMIT=${{ github.sha }}
+          cache-from: type=gha,scope=gsbadges
+          cache-to: type=gha,scope=gsbadges,mode=max
+
+  deploy:
+    name: Roll dev ECS service
+    needs: build
+    # Auto-deploy only on main. workflow_dispatch from a feature branch
+    # still builds + pushes its branch-prefixed tags but never rolls dev.
+    if: github.ref == 'refs/heads/main'
+    uses: gsusa/gs-infra-config/.github/workflows/roll-app.yml@main
+    with:
+      environment: dev
+      app: gsbadges
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

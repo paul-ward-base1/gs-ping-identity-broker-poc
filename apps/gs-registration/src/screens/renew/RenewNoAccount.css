@@ -1,0 +1,49 @@
+.renew-noact-found-card {
+  padding: var(--space-md);
+  background: var(--color-card-bg);
+  border: 1.5px solid rgba(92, 31, 139, 0.25);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.renew-noact-found-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.renew-noact-found-row {
+  display: flex;
+  gap: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  align-items: flex-start;
+}
+
+.renew-noact-found-label {
+  min-width: 80px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.renew-noact-expired {
+  color: #991b1b;
+  font-weight: var(--font-weight-semibold);
+}
+
+.renew-noact-not-me {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

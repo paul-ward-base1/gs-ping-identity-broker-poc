@@ -1,0 +1,799 @@
+/* ── Financial aid help tooltip ── */
+.pay-help-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pay-help-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-sm) var(--space-md);
+  width: 260px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-dark);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  z-index: 100;
+  pointer-events: none;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.pay-help-wrap:hover .pay-help-tooltip {
+  display: block;
+}
+
+/* ── Per-person payment options ── */
+.pay-person-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.pay-person-option-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: 10px;
+}
+
+.pay-person-option-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.pay-person-option-label {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  flex: 1;
+}
+
+.pay-person-option-name {
+  font-weight: var(--font-weight-semibold);
+}
+
+.pay-person-option-subtotal {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+/* ── Payment details heading ── */
+.pay-details-heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.pay-details-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.pay-details-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+/* ── Methods group (connected cards) ── */
+.pay-methods-group {
+  display: flex;
+  flex-direction: column;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+/* ── Login prompt ── */
+.pay-login-prompt {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  margin-top: calc(-1 * var(--space-xl) + var(--space-xs));
+}
+
+.pay-login-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Billing address card ── */
+.pay-address-card {
+  margin-top: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  cursor: pointer;
+}
+
+.pay-address-card--selected {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.04);
+}
+
+.pay-address-info {
+  flex: 1;
+}
+
+.pay-address-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  margin-bottom: 2px;
+}
+
+.pay-address-line {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* ── Radio button ── */
+.pay-radio {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.pay-radio--filled {
+  border-color: var(--color-primary);
+  background: var(--color-white);
+}
+
+.pay-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+/* ── Use different address ── */
+.pay-alt-toggle {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.pay-alt-toggle-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-primary);
+  font-size: 16px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.pay-alt-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ── Input fields ── */
+.pay-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pay-input {
+  height: 52px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  outline: none;
+}
+
+.pay-input::placeholder {
+  color: #adb5bd;
+}
+
+.pay-input:focus-visible {
+  border-color: var(--color-primary);
+}
+
+.pay-input--error {
+  border-color: #dc3545;
+}
+
+.pay-field-error {
+  font-size: var(--font-size-xs);
+  color: #dc3545;
+}
+
+.pay-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+/* ── Payment method cards ── */
+.pay-method-card {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-white);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.pay-method-card:first-child {
+  border-top: none;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.pay-method-card:last-child {
+  border-radius: 0 0 var(--border-radius-md) var(--border-radius-md);
+}
+
+.pay-method-card--selected {
+  background: rgba(0, 86, 64, 0.04);
+}
+
+.pay-method-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.pay-method-label {
+  flex: 1;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Card brand badges */
+.pay-card-brands {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+/* Card number with lock icon */
+.pay-input-icon-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.pay-input--with-icon {
+  padding-right: 44px;
+  width: 100%;
+}
+
+.pay-input-icon {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  color: var(--color-text-muted);
+}
+
+/* Field hint text */
+.pay-field-hint {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin-top: 2px;
+}
+
+
+/* Expanded credit card fields */
+.pay-card-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: 0 var(--space-md) var(--space-md);
+}
+
+.pay-card-fields--standalone {
+  padding: 0;
+}
+
+/* Financial aid note */
+.pay-aid-note {
+  padding: 0 var(--space-md) var(--space-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Payment error */
+.pay-error {
+  font-size: var(--font-size-sm);
+  color: #dc3545;
+}
+
+/* ── Order summary ── */
+.pay-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.pay-summary--top {
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+}
+
+.pay-summary-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: var(--font-family);
+}
+
+.pay-summary-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.pay-summary-chevron {
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.pay-summary-chevron--open {
+  transform: rotate(180deg);
+}
+
+.pay-summary-toggle-total {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.pay-summary-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+/* Voucher row */
+.pay-voucher-row {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.pay-voucher-input {
+  flex: 1;
+  height: 48px;
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  background: var(--color-white);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  outline: none;
+}
+
+.pay-voucher-input::placeholder { color: #adb5bd; }
+.pay-voucher-input:focus-visible { border-color: var(--color-primary); }
+.pay-voucher-input--error { border-color: #dc3545; }
+
+.pay-voucher-applied-label {
+  flex: 1;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pay-voucher-dismiss {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.pay-voucher-dismiss:hover {
+  color: var(--color-error);
+}
+
+.pay-voucher-btn--applied {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-color: var(--color-primary);
+  opacity: 1;
+  cursor: default;
+}
+
+.pay-voucher-btn:disabled:not(.pay-voucher-btn--applied):not(.pay-voucher-btn--invalid) {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pay-voucher-btn.pay-voucher-btn--invalid {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: var(--color-white);
+}
+
+.pay-voucher-error {
+  font-size: var(--font-size-sm);
+  color: #dc3545;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pay-voucher-error-dismiss {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  color: #dc3545;
+  cursor: pointer;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+.pay-voucher-btn {
+  height: 48px;
+  padding: 0 var(--space-md);
+  background: transparent;
+  border: 1.5px solid var(--color-primary);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* Person group */
+.pay-summary-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.pay-summary-group--divider {
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Person header row */
+.pay-sum-person-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.pay-sum-person-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pay-sum-troop-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  margin: 0;
+}
+
+/* Council badge in order summary */
+.pay-council-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.pay-troop-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.pay-council-logo {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.pay-council-gs {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  color: #00563F;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+}
+
+.pay-council-location {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+  text-align: right;
+}
+
+.pay-sum-person-name {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.pay-sum-tags-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.pay-sum-tag {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-muted);
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pay-sum-tag--level { color: var(--color-text-dark); }
+.pay-sum-tag--grade { color: var(--color-text-muted); }
+.pay-sum-tag--troop { color: var(--color-text-muted); }
+
+.pay-sum-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.pay-sum-dot--girl  { background: #4da6e0; }
+.pay-sum-dot--adult { background: var(--color-primary); }
+
+/* Council badge */
+.pay-council-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.pay-council-name {
+  font-size: 10px;
+  color: var(--color-text-muted);
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* Line items */
+.pay-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+}
+
+.pay-summary-row--discount,
+.pay-summary-row--discount .pay-summary-price {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.pay-voucher-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+  margin-bottom: var(--space-md);
+}
+
+.pay-fee-label {
+  display: flex;
+  align-items: center;
+  color: var(--color-text-dark);
+}
+
+.pay-summary-price {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: flex-start;
+}
+
+.pay-currency {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.8;
+}
+
+.pay-currency--lg {
+  font-size: var(--font-size-sm);
+  line-height: 2;
+}
+
+.pay-summary-divider {
+  height: 1px;
+  background: var(--color-border);
+}
+
+.pay-summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.pay-summary-total-label {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.pay-summary-total-amount {
+  font-size: 32px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+}
+
+.pay-total-usd {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  margin-right: 2px;
+}
+
+/* ── Non-refundable notice ── */
+.pay-notice {
+  background: #eeeaf8;
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  font-size: var(--font-size-sm);
+  color: #5a3ea0;
+  line-height: 1.5;
+}
+
+/* ── Terms text ── */
+.pay-terms-text {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+}
+
+.pay-terms-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ── Submit button ── */
+.pay-submit-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pay-submit-btn.pay-submit-btn--financial-aid {
+  background: #4caf50;
+}
+
+.pay-financial-aid-pending {
+  width: 100%;
+  padding: 16px var(--space-md);
+  background: #4caf50;
+  color: var(--color-white);
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+  box-sizing: border-box;
+  margin-bottom: -12px;
+}
+
+.pay-submit-btn {
+  width: 100%;
+  padding: 16px var(--space-md);
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+/* ── Footer links ── */
+.pay-footer-links {
+  display: flex;
+  gap: var(--space-lg);
+  justify-content: space-between;
+}
+
+.pay-footer-link {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  text-decoration: underline;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+

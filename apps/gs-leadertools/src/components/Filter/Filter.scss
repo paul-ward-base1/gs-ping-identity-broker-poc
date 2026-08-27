@@ -1,0 +1,118 @@
+#{$Filter} {
+  position: relative;
+  display: inline-block;
+
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: $spacing-6;
+    padding: $spacing-8;
+    background-color: $white;
+    color: $green-100;
+    border: 1px solid $neutral-70;
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    outline: none;
+
+    &--open {
+      background-color: $neutral-20;
+    }
+
+    &-label {
+      @include label-small;
+      color: $neutral-100;
+      display: flex;
+      gap: $spacing-6;
+      align-items: center;
+    }
+
+    &-counter {
+      @include meta-xsmall-sentence-case;
+      display: flex;
+      width: 1rem;
+      height: 1rem;
+      padding: $spacing-3 $spacing-4;
+      align-items: center;
+      gap: $spacing-8;
+      color: $white;
+      border-radius: 50%;
+      background: $secondary;
+      text-align: center;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    &-icon {
+      width: 1.5rem; // 24px
+      height: 1.5rem; // 24px
+
+      svg {
+        width: 1.5rem; // 24px
+        height: 1.5rem; // 24px
+      }
+
+      &--open {
+        transform: rotate3d(0, 0, 1, -180deg);
+        transition: transform 0.3s ease;
+      }
+    }
+
+    &:hover {
+      background: $neutral-20;
+      transition: 0.2s ease-in;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-color;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  &__options {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: $spacing-16;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 7.25rem;
+    width: max-content;
+    max-height: 15.5rem;
+    overflow-y: auto;
+
+    &--position {
+      &-left {
+        left: 0;
+      }
+      &-right {
+        right: 0;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $white;
+      border-radius: 100px;
+      margin: $spacing-16 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 100px;
+      background-color: $neutral-20;
+    }
+
+    #{$Choice} {
+      padding: 0;
+    }
+  }
+}

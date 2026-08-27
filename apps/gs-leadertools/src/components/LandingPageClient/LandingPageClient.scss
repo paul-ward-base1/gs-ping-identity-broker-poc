@@ -1,0 +1,327 @@
+#{$LandingPage} {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  @include breakpoint(tablet-large) {
+    gap: $spacing-40;
+  }
+
+  &__content {
+    max-width: $max-width;
+    justify-content: center;
+    margin: 0 auto;
+    flex-direction: column;
+    width: 100%;
+    gap: $spacing-16;
+  }
+
+  &__filters-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 auto;
+    background-color: $neutral-10;
+    // Offset the sticky header when pagination scrolls into view.
+    scroll-margin-top: 4.9rem;
+  }
+
+  &__filters-mobile {
+    display: flex;
+    padding: $spacing-16;
+    background-color: $neutral-10;
+    justify-content: space-between;
+    align-items: center;
+    gap: $spacing-16;
+    align-self: stretch;
+    flex-flow: row wrap;
+
+    @include breakpoint(tablet-large) {
+      display: none;
+    }
+
+    #{$Button} {
+      border: 1px solid $neutral-70;
+      background-color: $white;
+
+      &__label {
+        color: $neutral-100;
+      }
+    }
+  }
+
+  &__search-results-label,
+  &__search-results-term {
+    @include title-large;
+
+    @include breakpoint(tablet-large) {
+      @include title-xlarge;
+    }
+
+    color: $neutral-100;
+  }
+
+  &__search-results-term {
+    color: $tertiary;
+  }
+
+  &__filters-desktop {
+    display: none;
+
+    @include breakpoint(tablet-large) {
+      display: flex;
+      flex-direction: column;
+      max-width: $max-width;
+      margin: 0 auto;
+      width: 100%;
+      background-color: $neutral-10;
+      gap: $spacing-24;
+      padding: $spacing-40 $spacing-64;
+    }
+
+    @include breakpoint(desktop) {
+      padding: $spacing-40 7.5rem;
+    }
+  }
+
+  &__filters-area {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: row wrap;
+    gap: $spacing-16;
+  }
+
+  &__active-filters {
+    display: flex;
+    align-items: center;
+    gap: $spacing-16;
+    align-self: stretch;
+    flex-flow: row wrap;
+  }
+
+  &__filter {
+    display: flex;
+    align-items: center;
+    gap: $spacing-16;
+  }
+
+  &__filter-by-label {
+    color: $neutral-100;
+    font-family: $font-family-poppins;
+    font-size: 0.875rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 21px;
+  }
+
+  &__cards {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-16;
+    padding: $spacing-16 $spacing-16;
+
+    @include breakpoint(tablet-large) {
+      gap: $spacing-32;
+      padding: 0 $spacing-64;
+    }
+
+    @include breakpoint(desktop) {
+      padding: 0 7.5rem;
+    }
+  }
+
+  &__sorting {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: $spacing-8;
+
+    @include breakpoint(tablet-large) {
+      justify-content: space-between;
+      flex-direction: row;
+    }
+  }
+
+  &__sort-by {
+    display: flex;
+    align-items: center;
+    gap: $spacing-8;
+  }
+
+  &__sort-by-dropdown {
+    border-radius: 8px;
+    border: 1px solid $neutral-70;
+
+    #{$Dropdown} {
+      &__options {
+        left: 0;
+        z-index: 1;
+
+        @include breakpoint(tablet-large) {
+          left: unset;
+          right: 0;
+        }
+      }
+    }
+  }
+
+  &__sort-by-label {
+    display: none;
+
+    @include breakpoint(tablet-large) {
+      display: block;
+      color: $neutral-100;
+      font-family: $font-family-poppins;
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 600;
+      line-height: 21px;
+    }
+  }
+
+  &__filter-options-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
+  }
+
+  &__filter-options {
+    padding: 0 $spacing-24;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-8;
+    overflow-y: auto;
+    min-height: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &::-webkit-scrollbar {
+      width: $spacing-6;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $white;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $neutral-20;
+      border-radius: 10px;
+      border: none;
+    }
+
+    #{$Choice} {
+      width: 100%;
+    }
+  }
+
+  // Native scrollbar theming (::-webkit-scrollbar) is ignored by iOS Safari,
+  // so the "scroll to see more" indicator is drawn manually from the
+  // container's own scroll metrics instead.
+  &__filter-scrollbar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: $spacing-8;
+    width: $spacing-6;
+    background: $white;
+    border-radius: 10px;
+    pointer-events: none;
+  }
+
+  &__filter-scrollbar-thumb {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background-color: $neutral-20;
+    border-radius: 10px;
+  }
+
+  #{$SidePanel} {
+    &__data {
+      gap: 0;
+    }
+
+    &__content {
+      padding: 0;
+    }
+  }
+
+  &__panel-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  &__panel-filters {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-16;
+    overflow-y: auto;
+    padding: $spacing-16;
+    height: 100%;
+  }
+
+  &__panel-actions {
+    display: flex;
+    padding: $spacing-16;
+    gap: $spacing-8;
+    width: 100%;
+    border-top: 1px solid $neutral-20;
+    background-color: $white;
+  }
+
+  #{$Accordion}--open > #{$Accordion}__content {
+    max-height: 14.125rem;
+  }
+
+  &__pagination {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    border-top: 1px solid $neutral-20;
+
+    #{$Pagination} {
+      max-width: $max-width;
+    }
+  }
+
+  &__not-found {
+    display: flex;
+    padding: $spacing-40;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-24;
+    align-self: stretch;
+    border-radius: 16px;
+    border: 2px solid $neutral-20;
+    color: $neutral-100;
+    text-align: center;
+
+    @include breakpoint(tablet-large) {
+      display: flex;
+      max-width: $max-width;
+      padding: $spacing-56 7.5rem;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: $spacing-24;
+    }
+
+    &-title {
+      @include headline-xsmall;
+    }
+
+    &-text {
+      @include title-small;
+    }
+  }
+}

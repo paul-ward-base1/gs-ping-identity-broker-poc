@@ -1,0 +1,115 @@
+.select-field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.select-field-input {
+  appearance: none;
+  height: 56px;
+  width: 100%;
+  padding: 22px 40px 6px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-sm);
+  background: var(--color-input-bg);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.select-field-input:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 86, 64, 0.12);
+}
+
+.select-field--error .select-field-input {
+  border-color: var(--color-error);
+}
+
+.grade-info-wrap {
+  position: absolute;
+  left: 12px;
+  top: calc(50% + 8px);
+  transform: translateY(-50%);
+  pointer-events: all;
+  z-index: 1;
+}
+
+.grade-info-icon {
+  display: block;
+  cursor: pointer;
+}
+
+.grade-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 10px;
+  border-radius: 6px;
+  width: 260px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.grade-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}
+
+.grade-info-wrap:hover .grade-tooltip {
+  display: block;
+}
+
+.grade-select .select-field-input {
+  padding-left: 34px;
+}
+
+.select-field-label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-md);
+  color: var(--color-text-muted);
+  pointer-events: none;
+  transition: top 0.15s ease, font-size 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  opacity: 0;
+}
+
+.select-field-label--active {
+  top: 10px;
+  left: 12px;
+  transform: none;
+  font-size: var(--font-size-xs);
+  color: var(--color-primary);
+  opacity: 1;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.select-field-error {
+  font-size: var(--font-size-xs);
+  color: var(--color-error);
+  padding-left: 14px;
+}

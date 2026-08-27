@@ -1,0 +1,9 @@
+@mixin focus-state {
+  outline: 2px solid rgba($green-100, 0.5);
+  outline-offset: 2px;
+}
+
+@mixin active-state {
+  outline: none;
+  outline-offset: 0;
+}

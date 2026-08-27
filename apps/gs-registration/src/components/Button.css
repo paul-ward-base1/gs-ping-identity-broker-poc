@@ -1,0 +1,80 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.5;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-white);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: #004530;
+}
+
+.btn--primary:disabled {
+  background: #9cb4ac;
+  cursor: not-allowed;
+}
+
+.btn--outline {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+}
+
+.btn--outline:hover:not(:disabled) {
+  background: rgba(0, 86, 64, 0.06);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: none;
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background: rgba(0, 86, 64, 0.06);
+}
+
+.btn--full {
+  width: 100%;
+  align-self: stretch;
+}
+
+.btn-icon {
+  display: flex;
+  align-items: center;
+}
+
+/* Back button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  padding: 0;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+}

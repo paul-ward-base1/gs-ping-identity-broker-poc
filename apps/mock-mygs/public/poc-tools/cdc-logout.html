@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signing out...</title>
+  <script src="https://cdns.us1.gigya.com/js/gigya.js?apikey=3_YoJzW6wU2ztZGfCO9kiWJybg7MzyR7im1O9zDUGiVGqjofalYsOmdLtL9ULdjQG5"></script>
+</head>
+<body style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:sans-serif;color:#666;background:#f9fafb;">
+  <p>Signing out...</p>
+  <script>
+    function onGigyaServiceReady() {
+      gigya.accounts.logout({
+        callback: function () {
+          var params = new URLSearchParams(window.location.search);
+          var redirect = params.get("redirect") || "/";
+          window.location.replace(redirect);
+        }
+      });
+    }
+    // Fallback if gigya takes too long
+    setTimeout(function () {
+      var params = new URLSearchParams(window.location.search);
+      window.location.replace(params.get("redirect") || "/");
+    }, 5000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+#{$PageBanner} {
+  display: flex;
+  padding: $spacing-40 $spacing-8;
+  justify-content: center;
+  align-items: center;
+  gap: $spacing-8;
+  align-self: stretch;
+  background: $tertiary;
+
+  &__title {
+    white-space: pre-line;
+    color: $white;
+    text-align: center;
+
+    @include headline-xsmall;
+
+    @include breakpoint(tablet-large) {
+      @include headline-large;
+    }
+  }
+}

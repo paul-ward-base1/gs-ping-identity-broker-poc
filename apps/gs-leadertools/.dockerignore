@@ -1,0 +1,10 @@
+.env*
+!.env.dev
+!.env.uat
+node_modules
+.next
+.git
+storybook-static
+tests
+playwright.config.ts
+.storybook

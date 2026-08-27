@@ -1,0 +1,49 @@
+:root {
+  /* Colors — extracted from Figma */
+  --color-primary: #005640;
+  --color-primary-light: #00B451;
+  --color-purple: #5C1F8B;
+  --color-text-dark: #212529;
+  --color-text-muted: #646669;
+  --color-text-black: #000000;
+  --color-white: #ffffff;
+  --color-border: #dee2e6;
+  --color-input-bg: #ffffff;
+  --color-error: #dc3545;
+  --color-success-bg: #d1fae5;
+  --color-card-bg: #f8f9fa;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-serif: 'Times New Roman', Times, Georgia, serif;
+  --font-size-xs: 12px;
+  --font-size-sm: 14px;
+  --font-size-md: 16px;
+  --font-size-lg: 18px;
+  --font-size-xl: 24px;
+  --font-size-2xl: 32px;
+
+  --font-weight-light: 300;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+
+  /* Layout */
+  --screen-max-width: 402px;
+  --nav-height: 56px;
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-pill: 100px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+}

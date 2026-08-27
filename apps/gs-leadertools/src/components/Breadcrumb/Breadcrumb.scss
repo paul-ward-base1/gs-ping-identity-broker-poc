@@ -1,0 +1,22 @@
+#{$Breadcrumb} {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: $spacing-4;
+  color: $green-100;
+  cursor: pointer;
+
+  @media print {
+    display: none;
+  }
+
+  &__icon {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  &__text {
+    @include label-small;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,42 @@
+#{$Supply} {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &__data {
+    display: flex;
+    align-items: center;
+    gap: $spacing-8;
+    flex: 1 0 0;
+
+    &-bullet {
+      display: none;
+
+      @include breakpoint(desktop) {
+        display: flex;
+        width: 0.625rem;
+        height: 0.625rem;
+        border-radius: 50%;
+        background-color: $primary;
+      }
+    }
+
+    &-label {
+      @include body-default;
+    }
+
+    &-optional {
+      @include body-small;
+      color: $neutral-70;
+      padding-left: $spacing-6;
+    }
+  }
+
+  &__unit {
+    @include meta-small;
+    color: $neutral-70;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,105 @@
+#{$Modal} {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 1000;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-20;
+  flex-shrink: 0;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+
+  &--open {
+    transform: scale(1);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    padding: $spacing-12;
+    height: 100%;
+
+    @include breakpoint(desktop) {
+      padding: 0;
+      height: auto;
+    }
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: white;
+    min-height: 34.75rem;
+    overflow-y: hidden;
+    max-width: 65.375rem;
+    align-self: center;
+    border-radius: 12px;
+    border: 1px solid $neutral-60;
+    margin: auto;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $spacing-16;
+    width: 100%;
+    justify-content: space-between;
+    padding: $spacing-18 $spacing-24;
+    background-color: $neutral-10;
+    border-radius: 12px 12px 0 0;
+  }
+
+  &__title {
+    @include title-medium;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__actions {
+    gap: $spacing-18;
+    display: flex;
+  }
+
+  &__details-desktop {
+    display: none;
+
+    @include breakpoint(tablet-large) {
+      display: flex;
+    }
+  }
+
+  &__details-mobile {
+    display: flex;
+    width: 100%;
+    padding: $spacing-24;
+    border-top: 1px solid $neutral-20;
+
+    #{$Button} {
+      width: 100%;
+      justify-content: center;
+    }
+
+    @include breakpoint(tablet-large) {
+      display: none;
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}

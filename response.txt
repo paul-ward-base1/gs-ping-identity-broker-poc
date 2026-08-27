@@ -1,0 +1,492 @@
+ curl -X GET "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications" \
+  -H "Authorization: Bearer $ACCESS_TOKEN" \
+  -H "Content-Type: application/json"
+{
+  "_links" : {
+    "self" : {
+      "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications"
+    }
+  },
+  "_embedded" : {
+    "applications" : [ {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/66f115a6-0dc6-4ff5-ad30-780d2da0411c/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/66f115a6-0dc6-4ff5-ad30-780d2da0411c/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/66f115a6-0dc6-4ff5-ad30-780d2da0411c"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/66f115a6-0dc6-4ff5-ad30-780d2da0411c/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/66f115a6-0dc6-4ff5-ad30-780d2da0411c/secret"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "66f115a6-0dc6-4ff5-ad30-780d2da0411c",
+      "name" : "gs-leadertools",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WEB_APP",
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-12T16:51:28.296Z",
+      "updatedAt" : "2026-08-14T20:34:11.634Z",
+      "clientId" : "66f115a6-0dc6-4ff5-ad30-780d2da0411c",
+      "assignActorRoles" : false,
+      "responseTypes" : [ "CODE" ],
+      "pkceEnforcement" : "OPTIONAL",
+      "requestScopesForMultipleResourcesEnabled" : false,
+      "redirectUris" : [ "http://localhost:3000/api/auth/callback/broker" ],
+      "deviceTimeout" : 600,
+      "grantTypes" : [ "AUTHORIZATION_CODE" ],
+      "idpSignoff" : false,
+      "refreshTokenDuration" : 2592000,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "CLIENT_SECRET_BASIC",
+      "postLogoutRedirectUris" : [ "http://localhost:3000" ],
+      "refreshTokenRollingDuration" : 15552000,
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "parTimeout" : 60
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07/secret"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07",
+      "name" : "gs-registration",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WEB_APP",
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-12T17:29:06.484Z",
+      "updatedAt" : "2026-08-12T18:12:28.449Z",
+      "clientId" : "c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07",
+      "assignActorRoles" : false,
+      "responseTypes" : [ "CODE" ],
+      "pkceEnforcement" : "OPTIONAL",
+      "requestScopesForMultipleResourcesEnabled" : false,
+      "redirectUris" : [ "http://localhost:3300/callback", "http://localhost:3300/silent-renew.html" ],
+      "deviceTimeout" : 600,
+      "grantTypes" : [ "AUTHORIZATION_CODE" ],
+      "idpSignoff" : false,
+      "refreshTokenDuration" : 2592000,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "NONE",
+      "postLogoutRedirectUris" : [ "http://localhost:3300" ],
+      "refreshTokenRollingDuration" : 15552000,
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "parTimeout" : 60
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/fa095fdd-cc2c-487b-b6e0-949dcf525f0d/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/fa095fdd-cc2c-487b-b6e0-949dcf525f0d/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/fa095fdd-cc2c-487b-b6e0-949dcf525f0d"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/fa095fdd-cc2c-487b-b6e0-949dcf525f0d/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/fa095fdd-cc2c-487b-b6e0-949dcf525f0d/secret"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "fa095fdd-cc2c-487b-b6e0-949dcf525f0d",
+      "name" : "mock-mygs",
+      "description" : "SSO sigon POC",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WEB_APP",
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-12T15:40:01.946Z",
+      "updatedAt" : "2026-08-12T15:48:12.209Z",
+      "clientId" : "fa095fdd-cc2c-487b-b6e0-949dcf525f0d",
+      "assignActorRoles" : false,
+      "responseTypes" : [ "CODE" ],
+      "pkceEnforcement" : "OPTIONAL",
+      "requestScopesForMultipleResourcesEnabled" : false,
+      "redirectUris" : [ "http://localhost:3200/api/auth/callback/broker" ],
+      "deviceTimeout" : 600,
+      "grantTypes" : [ "AUTHORIZATION_CODE" ],
+      "idpSignoff" : false,
+      "refreshTokenDuration" : 2592000,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "CLIENT_SECRET_BASIC",
+      "postLogoutRedirectUris" : [ "http://localhost:3200" ],
+      "refreshTokenRollingDuration" : 15552000,
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "parTimeout" : 60
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9bb3ca8c-8d1b-4add-8302-b316ccfadb0e/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9bb3ca8c-8d1b-4add-8302-b316ccfadb0e/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9bb3ca8c-8d1b-4add-8302-b316ccfadb0e"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9bb3ca8c-8d1b-4add-8302-b316ccfadb0e/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9bb3ca8c-8d1b-4add-8302-b316ccfadb0e/secret"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "9bb3ca8c-8d1b-4add-8302-b316ccfadb0e",
+      "name" : "mock-shop",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WEB_APP",
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-12T16:33:21.058Z",
+      "updatedAt" : "2026-08-12T16:37:57.286Z",
+      "clientId" : "9bb3ca8c-8d1b-4add-8302-b316ccfadb0e",
+      "assignActorRoles" : false,
+      "responseTypes" : [ "CODE" ],
+      "pkceEnforcement" : "OPTIONAL",
+      "requestScopesForMultipleResourcesEnabled" : false,
+      "redirectUris" : [ "http://localhost:3100/api/auth/callback/broker" ],
+      "deviceTimeout" : 600,
+      "grantTypes" : [ "AUTHORIZATION_CODE" ],
+      "idpSignoff" : false,
+      "refreshTokenDuration" : 2592000,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "CLIENT_SECRET_BASIC",
+      "postLogoutRedirectUris" : [ "http://localhost:3100" ],
+      "refreshTokenRollingDuration" : 15552000,
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "parTimeout" : 60
+    }, {
+      "_links" : {
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/555cb094-924f-4690-97f5-0535ccadb0a6"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "555cb094-924f-4690-97f5-0535ccadb0a6",
+      "name" : "PingOne Admin Console",
+      "description" : "The admin console application which is used to manage this environment's configuration and identity data.",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "PING_ONE_ADMIN_CONSOLE",
+      "accessControl" : {
+        "role" : {
+          "type" : "ADMIN_USERS_ONLY"
+        }
+      },
+      "icon" : {
+        "id" : "a3d073bc-3108-49ad-b96c-404bea59a1d0",
+        "href" : "https://assets.pingone.com/ux/ui-library/4.18.0/images/logo-pingidentity.png"
+      },
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-11T22:33:29.176Z",
+      "updatedAt" : "2026-08-11T22:33:29.176Z",
+      "clientId" : "555cb094-924f-4690-97f5-0535ccadb0a6",
+      "assignActorRoles" : false,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "pkceEnforcement" : "OPTIONAL",
+      "tokenEndpointAuthMethod" : "NONE"
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c1d73698-1074-4bcd-969a-f2174794acd4/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c1d73698-1074-4bcd-969a-f2174794acd4"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "c1d73698-1074-4bcd-969a-f2174794acd4",
+      "name" : "PingOne Application Portal",
+      "description" : "The application portal where users can view and access their applications.",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "PING_ONE_PORTAL",
+      "icon" : {
+        "id" : "a3d073bc-3108-49ad-b96c-404bea59a1d0",
+        "href" : "https://assets.pingone.com/ux/ui-library/4.18.0/images/logo-pingidentity.png"
+      },
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-11T22:33:30.245Z",
+      "updatedAt" : "2026-08-19T16:25:20.078Z",
+      "clientId" : "c1d73698-1074-4bcd-969a-f2174794acd4",
+      "assignActorRoles" : false,
+      "applyDefaultTheme" : false,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "tokenEndpointAuthMethod" : "NONE",
+      "pkceEnforcement" : "OPTIONAL"
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c/secret"
+        },
+        "roleAssignments" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/9517a28f-42f7-4a34-952c-3f1820c0717c/roleAssignments"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "9517a28f-42f7-4a34-952c-3f1820c0717c",
+      "name" : "PingOne Helix Connection",
+      "description" : "PingOne Helix App to connect to Helix Platform",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WORKER",
+      "accessControl" : {
+        "role" : {
+          "type" : "ADMIN_USERS_ONLY"
+        }
+      },
+      "icon" : {
+        "id" : "b621b8c2-2f60-404c-9d6b-9f09dfa4dbd8",
+        "href" : "https://assets.pingone.com/ux/ui-library/4.18.0/images/logo-pingidentity.png"
+      },
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-11T22:33:39.188Z",
+      "updatedAt" : "2026-08-11T22:33:39.188Z",
+      "clientId" : "9517a28f-42f7-4a34-952c-3f1820c0717c",
+      "assignActorRoles" : false,
+      "grantTypes" : [ "CLIENT_CREDENTIALS" ],
+      "idpSignoff" : false,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "CLIENT_SECRET_BASIC",
+      "pkceEnforcement" : "OPTIONAL",
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "parTimeout" : 60,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "deviceTimeout" : 600
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/1f910dc5-a079-4d61-9cfd-f97cd62c1c88/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/1f910dc5-a079-4d61-9cfd-f97cd62c1c88"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "1f910dc5-a079-4d61-9cfd-f97cd62c1c88",
+      "name" : "PingOne Self-Service - MyAccount",
+      "description" : "The self-service application where users can manage profile details, passwords, MFA devices, etc.",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "PING_ONE_SELF_SERVICE",
+      "icon" : {
+        "id" : "a3d073bc-3108-49ad-b96c-404bea59a1d0",
+        "href" : "https://assets.pingone.com/ux/ui-library/4.18.0/images/logo-pingidentity.png"
+      },
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-11T22:33:28.087Z",
+      "updatedAt" : "2026-08-11T22:33:28.087Z",
+      "clientId" : "1f910dc5-a079-4d61-9cfd-f97cd62c1c88",
+      "assignActorRoles" : false,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "pkceEnforcement" : "OPTIONAL",
+      "tokenEndpointAuthMethod" : "NONE"
+    }, {
+      "_links" : {
+        "grants" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f/grants"
+        },
+        "environment" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010"
+        },
+        "keyRotationPolicy" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/keyRotationPolicies/1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        },
+        "metadata" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f/metadata"
+        },
+        "self" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f"
+        },
+        "attributes" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f/attributes"
+        },
+        "secret" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f/secret"
+        },
+        "roleAssignments" : {
+          "href" : "https://api.pingone.ca/v1/environments/a6e455f2-da21-4c7d-b40f-8b288a64b010/applications/c2b4986b-2f31-4e46-a2de-fa8b0a08b00f/roleAssignments"
+        }
+      },
+      "environment" : {
+        "id" : "a6e455f2-da21-4c7d-b40f-8b288a64b010"
+      },
+      "id" : "c2b4986b-2f31-4e46-a2de-fa8b0a08b00f",
+      "name" : "poc-mgmt-api",
+      "enabled" : true,
+      "hiddenFromAppPortal" : false,
+      "type" : "WORKER",
+      "accessControl" : {
+        "role" : {
+          "type" : "ADMIN_USERS_ONLY"
+        }
+      },
+      "protocol" : "OPENID_CONNECT",
+      "createdAt" : "2026-08-12T19:02:41.548Z",
+      "updatedAt" : "2026-08-12T20:23:43.907Z",
+      "clientId" : "c2b4986b-2f31-4e46-a2de-fa8b0a08b00f",
+      "assignActorRoles" : false,
+      "grantTypes" : [ "CLIENT_CREDENTIALS" ],
+      "idpSignoff" : false,
+      "refreshTokenDuration" : 2592000,
+      "additionalRefreshTokenReplayProtectionEnabled" : true,
+      "tokenEndpointAuthMethod" : "CLIENT_SECRET_BASIC",
+      "pkceEnforcement" : "OPTIONAL",
+      "refreshTokenRollingDuration" : 15552000,
+      "parRequirement" : "OPTIONAL",
+      "devicePollingInterval" : 5,
+      "signing" : {
+        "keyRotationPolicy" : {
+          "id" : "1292366f-b4f7-448d-a7cf-f7a157db3a7e"
+        }
+      },
+      "parTimeout" : 60,
+      "deviceTimeout" : 600
+    } ]
+  },
+  "count" : 9,
+  "size" : 9
+}%

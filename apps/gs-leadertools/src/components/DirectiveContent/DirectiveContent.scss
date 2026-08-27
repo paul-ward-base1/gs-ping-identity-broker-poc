@@ -1,0 +1,32 @@
+#{$DirectiveContent} {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-12;
+  width: 100%;
+
+  &__title {
+    @include headline-xsmall;
+    margin: 0;
+
+    @include breakpoint(tablet-large) {
+      @include headline-small;
+    }
+  }
+
+  &__description {
+    @include body-default;
+    margin: 0;
+
+    p {
+      margin: 0 0 $spacing-12;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    &--plaintext {
+      margin: 0;
+    }
+  }
+}

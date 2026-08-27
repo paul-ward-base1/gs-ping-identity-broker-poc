@@ -1,0 +1,28 @@
+.lead-conf-hero {
+  background: var(--color-purple) !important;
+}
+
+.lead-conf-hero .conf-title {
+  font-size: 27px;
+}
+
+.lead-conf-bullets {
+  list-style: disc;
+  padding-left: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.lead-conf-bullets li {
+  font-size: var(--font-size-md);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+}
+
+.lead-conf-link {
+  color: var(--color-primary);
+  text-decoration: underline;
+  font-weight: var(--font-weight-semibold);
+}

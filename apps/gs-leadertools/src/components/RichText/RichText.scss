@@ -1,0 +1,152 @@
+#{$RichText} {
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  width: 100%;
+  min-width: 0;
+
+  table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+  }
+
+  pre,
+  code {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  h1 {
+    @include headline-large;
+  }
+
+  h2 {
+    @include headline-medium;
+  }
+
+  h3 {
+    @include headline-small;
+  }
+
+  p,
+  div {
+    @include body-default;
+    margin: 0;
+  }
+
+  a {
+    @include body-default-strong;
+    color: $secondary;
+    text-decoration: underline;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  strong,
+  b {
+    font-weight: 600;
+  }
+
+  a[data-external='true']::after {
+    content: '';
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    margin-left: $spacing-4;
+    margin-bottom: 0.2rem;
+    background-image: url('../../assets/icons/external-link.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    vertical-align: middle;
+  }
+
+  a[data-external='true']:has(> img:only-child)::after {
+    content: none;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem 0;
+    border-radius: 0.5rem;
+  }
+
+  ol {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-24;
+    padding: 0;
+    list-style: none;
+    counter-reset: item;
+
+    @include breakpoint(tablet-large) {
+      gap: 2.313rem;
+    }
+
+    li {
+      @include body-default;
+
+      counter-increment: item;
+      position: relative;
+      padding-left: calc(1.8rem + #{$spacing-6} + 0.2rem);
+      min-height: 2rem;
+
+      @include breakpoint(tablet-large) {
+        padding-left: calc(2.4rem + 0.813rem + 0.3rem);
+        padding-top: $spacing-6;
+      }
+
+      &::before {
+        content: counter(item);
+        position: absolute;
+        left: 0;
+        top: 0.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $secondary;
+        color: $white;
+        width: 1.8rem;
+        height: 1.8rem;
+        border-radius: 50%;
+        font-weight: 600;
+        font-size: 1rem;
+        font-style: normal;
+        line-height: 166.529%;
+
+        @include breakpoint(tablet-large) {
+          width: 2.4rem;
+          height: 2.4rem;
+          top: 0;
+          font-family: $font-family-poppins;
+          font-size: 1.5rem;
+          line-height: 26.645px;
+          letter-spacing: -1px;
+          padding: 0.15rem;
+        }
+      }
+
+      > ol {
+        margin-left: 5rem;
+        width: 100%;
+        counter-reset: item;
+      }
+    }
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+
+    li {
+      @include body-default;
+    }
+
+    ::marker {
+      color: $primary;
+      font-size: inherit;
+    }
+  }
+}

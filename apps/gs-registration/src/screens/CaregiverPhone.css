@@ -1,0 +1,43 @@
+.sms-consent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.sms-consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.sms-consent-checkbox {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.sms-consent-label {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.sms-consent-detail {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.sms-consent-unsubscribe {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  padding-top: var(--space-xs);
+}

@@ -1,0 +1,40 @@
+@use '../variables' as *;
+
+@keyframes pulse {
+  0% {
+    background-color: $neutral-20;
+  }
+  50% {
+    background-color: $neutral-10;
+  }
+  100% {
+    background-color: $neutral-20;
+  }
+}
+
+@keyframes pulse-border {
+  0% {
+    border-color: $neutral-20;
+  }
+  50% {
+    border-color: $neutral-10;
+  }
+  100% {
+    border-color: $neutral-20;
+  }
+}
+
+@mixin placeholder-animation($color) {
+  background-color: $color;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    animation: pulse 2s infinite ease-in-out;
+  }
+}

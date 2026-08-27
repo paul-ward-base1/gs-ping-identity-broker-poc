@@ -1,0 +1,42 @@
+#{$DownloadButton} {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: $green-100;
+  padding: 0.625rem;
+  border: none;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: 0.2s ease-in;
+
+  &__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: inherit;
+  }
+
+  &:hover {
+    background-color: $neutral-10;
+  }
+
+  &:active {
+    background-color: $green-100;
+    color: $white;
+    @include active-state;
+  }
+
+  &:focus {
+    background-color: $green-100;
+    color: $white;
+    @include focus-state;
+  }
+
+  &:active:focus,
+  &:focus:active {
+    background-color: $green-100;
+    color: $white;
+    @include active-state;
+  }
+}

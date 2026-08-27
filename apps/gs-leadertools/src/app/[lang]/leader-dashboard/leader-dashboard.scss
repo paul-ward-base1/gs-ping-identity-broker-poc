@@ -1,0 +1,86 @@
+.leader-dashboard {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: 'Poppins', sans-serif;
+
+  &__header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 1.75rem;
+      color: #005640;
+      margin: 0;
+    }
+  }
+
+  &__council {
+    font-size: 0.9rem;
+    color: #646669;
+    background: #f0f0f0;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+  }
+
+  &__section {
+    margin-bottom: 2.5rem;
+
+    h2 {
+      font-size: 1.2rem;
+      color: #333;
+      border-bottom: 2px solid #00ae58;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    th, td {
+      padding: 0.6rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    th {
+      background: #f8f8f8;
+      font-weight: 600;
+      color: #005640;
+    }
+
+    tr:hover td {
+      background: #f5faf7;
+    }
+  }
+}
+
+.access-denied {
+  text-align: center;
+  padding: 4rem 2rem;
+
+  h1 {
+    color: #c0392b;
+    font-size: 1.5rem;
+  }
+
+  p {
+    color: #646669;
+    max-width: 500px;
+    margin: 0.75rem auto;
+  }
+
+  &__role {
+    margin-top: 1.5rem !important;
+  }
+
+  &__hint {
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+}

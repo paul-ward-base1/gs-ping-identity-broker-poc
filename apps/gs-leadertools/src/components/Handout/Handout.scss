@@ -1,0 +1,22 @@
+#{$Handout} {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: row;
+  gap: $spacing-14;
+
+  #{$OutlinedCard} {
+    display: flex;
+    padding: $spacing-10 $spacing-18 $spacing-10 $spacing-10;
+    align-items: center;
+    gap: $spacing-14;
+    flex: 1 0 0;
+    max-width: 100%;
+    min-width: unset;
+  }
+
+  &__unit {
+    @include meta-small;
+    color: $neutral-70;
+  }
+}

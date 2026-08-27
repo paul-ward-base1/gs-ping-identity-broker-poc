@@ -1,0 +1,204 @@
+.renew-conf-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) 0;
+}
+
+.renew-conf-check {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Purple membership card */
+.renew-conf-card {
+  border-radius: var(--border-radius-lg);
+  background: linear-gradient(135deg, #5C1F8B 0%, #7B2FBE 50%, #9B3FD6 100%);
+  color: white;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(92, 31, 139, 0.35);
+}
+
+.renew-conf-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.renew-conf-card-logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: white;
+}
+
+.renew-conf-card-badge {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  padding: 3px 10px;
+  border-radius: var(--border-radius-pill);
+  background: rgba(0, 180, 81, 0.25);
+  color: #a7f3c0;
+  border: 1px solid rgba(0, 180, 81, 0.4);
+}
+
+.renew-conf-card-body {
+  padding: var(--space-lg) var(--space-md) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.renew-conf-card-name {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.5px;
+}
+
+.renew-conf-card-type {
+  font-size: var(--font-size-sm);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.renew-conf-card-footer {
+  display: flex;
+  gap: var(--space-xl);
+  padding: var(--space-md);
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.renew-conf-card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.renew-conf-card-field-label {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.renew-conf-card-field span:last-child {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Order summary */
+.renew-conf-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+}
+
+.renew-conf-summary-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  margin-bottom: var(--space-xs);
+}
+
+.renew-conf-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.renew-conf-row--total {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border);
+}
+
+.renew-conf-value {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  text-align: right;
+}
+
+/* Email receipt */
+.renew-conf-receipt {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(0, 180, 81, 0.08);
+  border: 1px solid rgba(0, 180, 81, 0.25);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+}
+
+/* What happens next */
+.renew-conf-next {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.renew-conf-next-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+}
+
+.renew-conf-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.renew-conf-step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+.renew-conf-step-num {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  border-radius: 50%;
+  background: #5C1F8B;
+  color: white;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.renew-conf-step-heading {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  margin-bottom: 2px;
+}
+
+.renew-conf-step-desc {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}

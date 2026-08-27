@@ -1,0 +1,82 @@
+#{$SearchBox} {
+  display: flex;
+  padding: $spacing-8 $spacing-12;
+  align-items: center;
+  gap: $spacing-10;
+  border-radius: 100px;
+  border: 1px solid $neutral-70;
+  background: $white;
+  cursor: pointer;
+  width: 100%;
+  flex: 1 0 0;
+
+  @include breakpoint(tablet-large) {
+    width: 18.75rem;
+  }
+
+  &__icon {
+    width: $spacing-24;
+    height: $spacing-24;
+    aspect-ratio: 1/1;
+    color: $secondary;
+  }
+
+  &__input {
+    font-family: $font-family-avenir;
+    border: none;
+    outline: none;
+    flex: 1;
+    // 16px (1rem) prevents iOS Safari/WebKit from auto-zooming the page when the
+    // input is focused on mobile (it zooms any focused field with font-size < 16px).
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 1.313rem;
+    color: $neutral-100;
+    &::placeholder {
+      color: $neutral-70;
+    }
+  }
+
+  &__clear {
+    width: $spacing-24;
+    height: $spacing-24;
+
+    #{$Button} {
+      color: $neutral-60;
+      padding: 0;
+      width: $spacing-24;
+      height: $spacing-24;
+
+      &:hover {
+        background-color: unset;
+      }
+    }
+  }
+
+  &:hover {
+    border-color: $neutral-70;
+    background-color: $neutral-20;
+    transition: 0.2s ease-in;
+
+    input {
+      background-color: $neutral-20;
+      transition: 0.2s ease-in;
+    }
+  }
+
+  &--focused:not(#{$SearchBox}--active) {
+    @include focus-state;
+
+    border-color: $neutral-70;
+  }
+
+  &--filled,
+  &--active {
+    border-color: $secondary;
+  }
+
+  &:focus-visible {
+    @include focus-state;
+  }
+}

@@ -1,0 +1,16 @@
+.know-troop-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+}
+
+.know-troop-info {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  background: rgba(0, 86, 64, 0.05);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+}

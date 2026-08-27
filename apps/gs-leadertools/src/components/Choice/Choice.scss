@@ -1,0 +1,106 @@
+#{$Choice} {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  gap: $spacing-8;
+  padding: $spacing-2;
+  width: 100%;
+
+  &__label {
+    @include body-default;
+    color: $neutral-100;
+    cursor: pointer;
+  }
+
+  &__input {
+    position: relative;
+    width: 1rem; // 16px
+    height: 1rem; // 16px
+    margin: 0;
+    appearance: none;
+    border-radius: 2px; // 2px
+    border: 1px solid $neutral-70; // 1px
+    background-color: $white;
+    cursor: pointer;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      width: 0.875rem; // 14px
+      height: 0.875rem; // 14px
+      background-color: transparent;
+      mask: url('../../assets/icons/check.svg') no-repeat center;
+      mask-size: contain;
+      pointer-events: none;
+    }
+
+    &:checked {
+      background-color: $green-100;
+      border-color: $green-100;
+
+      &::before {
+        background-color: $neutral-10;
+      }
+    }
+
+    &[type='radio'] {
+      border-radius: 50%;
+      border: 1px solid $neutral-70;
+
+      &::before {
+        border-radius: 50%;
+        background-color: transparent;
+        mask: none;
+      }
+
+      &:checked {
+        &::before {
+          margin: 0 auto;
+          width: 0.5rem; // 8px
+          mask: url('../../assets/icons/circle.svg') no-repeat center;
+          mask-size: contain;
+          background-color: $neutral-10;
+        }
+      }
+    }
+
+    &:focus-visible {
+      outline: none;
+    }
+
+    &:not(:checked):not(:disabled):hover::before {
+      background-color: $neutral-20;
+      mask: none;
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+
+    #{$Choice} {
+      &__input {
+        cursor: not-allowed;
+        background-color: $neutral-20;
+        border-color: $neutral-70;
+
+        &::before {
+          background-color: $neutral-20;
+          mask: none;
+        }
+      }
+
+      &__label {
+        cursor: not-allowed;
+        color: $neutral-70;
+      }
+    }
+  }
+
+  &--focused {
+    outline: 2px solid $border-color;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}

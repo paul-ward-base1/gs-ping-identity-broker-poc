@@ -1,0 +1,125 @@
+.troop-results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.troop-result-card {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.troop-result-card:hover {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.02);
+}
+
+.troop-result-card--selected {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.04);
+}
+
+.troop-result-radio {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+  transition: border-color 0.15s ease;
+}
+
+.troop-result-card--selected .troop-result-radio {
+  border-color: var(--color-primary);
+}
+
+.troop-result-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.troop-result-card--selected .troop-result-dot {
+  opacity: 1;
+}
+
+.troop-result-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.troop-result-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.troop-result-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.troop-result-sep {
+  color: var(--color-border);
+}
+
+.troop-result-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  gap: var(--space-sm);
+}
+
+.troop-result-leader {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.troop-result-spots {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.07);
+  padding: 2px 8px;
+  border-radius: var(--border-radius-pill);
+  white-space: nowrap;
+}
+
+.troop-result-spots--low {
+  color: #b45309;
+  background: rgba(180, 83, 9, 0.08);
+}
+
+.troop-no-match {
+  background: none;
+  border: none;
+  padding: var(--space-sm) 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-align: left;
+}

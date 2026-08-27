@@ -1,0 +1,135 @@
+#{$Settings} {
+  position: relative;
+  display: inline-block;
+  flex-shrink: 0;
+
+  &__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-8;
+    padding: $spacing-8;
+    background: $white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: none;
+
+    &--open {
+      background-color: $neutral-20;
+    }
+
+    &:hover {
+      background: $neutral-20;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-color;
+      outline-offset: 2px;
+      border-radius: 50%;
+    }
+
+    @include breakpoint(tablet) {
+      justify-content: flex-start;
+      padding: $spacing-8 $spacing-16;
+      border-radius: 8px;
+
+      &:focus-visible {
+        border-radius: 4px;
+      }
+    }
+  }
+
+  &__icon {
+    display: block;
+    width: 1.75rem; // 28px
+    height: 1.75rem; // 28px
+    color: $green-100;
+
+    @include breakpoint(tablet) {
+      display: none;
+    }
+  }
+
+  &__button-label,
+  &__button-icon {
+    display: none;
+
+    @include breakpoint(tablet) {
+      display: inline-flex;
+    }
+  }
+
+  &__button-label {
+    @include breakpoint(tablet) {
+      @include label-small;
+      color: $green-100;
+      text-transform: uppercase;
+    }
+  }
+
+  &__button-icon {
+    align-items: center;
+    width: 1.5rem; // 24px
+    height: 1.5rem; // 24px
+
+    svg {
+      width: 1.5rem; // 24px
+      height: 1.5rem; // 24px
+    }
+
+    &--open {
+      transform: rotate3d(0, 0, 1, -180deg);
+      transition: transform 0.3s ease;
+    }
+  }
+
+  &__menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    margin: 0;
+    padding: $spacing-8;
+    list-style: none;
+    background: $white;
+    border: 1px solid $neutral-20;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    z-index: 10;
+    min-width: 11rem; // 176px
+    width: max-content;
+  }
+
+  &__menu-item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-8;
+    width: 100%;
+    padding: $spacing-8 $spacing-12;
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    color: $neutral-90;
+
+    @include label-small;
+
+    &:hover {
+      background: $neutral-10;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $border-color;
+      outline-offset: 2px;
+    }
+
+    &-icon {
+      flex-shrink: 0;
+      width: 1.125rem; // 18px
+      height: 1.125rem; // 18px
+      color: $green-100;
+    }
+  }
+}

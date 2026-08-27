@@ -1,0 +1,108 @@
+// Callout — matches Figma node 4684-39840.
+#{$Callout} {
+  display: flex;
+  align-items: flex-start;
+  gap: $spacing-10;
+  padding: $spacing-10 $spacing-14 $spacing-10 $spacing-10;
+  border-radius: $spacing-12;
+  width: 100%;
+  background-color: $white;
+  border: 1px solid $neutral-60;
+
+  &__icon {
+    flex: 0 0 auto;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    background-color: $neutral-10;
+    color: $tertiary;
+  }
+
+  &__icon-svg {
+    width: 2rem;
+    height: 2rem;
+
+    // SVGs render as a CSS mask so the shape inherits the icon-badge color,
+    // which the `--level-*` modifiers theme per program level.
+    &--mask {
+      display: inline-block;
+      background-color: currentColor;
+      -webkit-mask-repeat: no-repeat;
+      mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      mask-position: center;
+      -webkit-mask-size: contain;
+      mask-size: contain;
+    }
+  }
+
+  &__content {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    word-break: break-word;
+    color: $neutral-100;
+  }
+
+  &__title {
+    @include title-xsmall;
+    margin: 0;
+    color: $neutral-100;
+  }
+
+  &__description {
+    margin: 0;
+    color: $neutral-100;
+  }
+
+  // Per-level theming for the icon badge only — card chrome stays neutral.
+  &--level {
+    &-daisy {
+      #{$Callout}__icon {
+        background-color: $sky-10;
+        color: $river-100;
+      }
+    }
+    &-brownie {
+      #{$Callout}__icon {
+        background-color: $khaki-10;
+        color: $brown-100;
+      }
+    }
+    &-junior {
+      #{$Callout}__icon {
+        background-color: $crocus-10;
+        color: $tertiary;
+      }
+    }
+    &-cadette {
+      #{$Callout}__icon {
+        background-color: $bubblegum-10;
+        color: $poppy-100;
+      }
+    }
+    &-senior {
+      #{$Callout}__icon {
+        background-color: $peach-10;
+        color: $flame-100;
+      }
+    }
+    &-ambassador {
+      #{$Callout}__icon {
+        background-color: $sunshine-10;
+        color: $gold-100;
+      }
+    }
+    &-multi {
+      #{$Callout}__icon {
+        background-color: $neutral-10;
+        color: $tertiary;
+      }
+    }
+  }
+}

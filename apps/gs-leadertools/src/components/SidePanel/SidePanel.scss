@@ -1,0 +1,108 @@
+#{$SidePanel} {
+  &__container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%; // takes full screen width
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1000;
+
+    &--open {
+      pointer-events: auto;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    @include breakpoint(desktop) {
+      display: none;
+    }
+  }
+
+  &__data {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 398px;
+    width: calc(100% - 40px);
+    height: 100%;
+    background-color: $crocus-10;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-16;
+    transform: translateX(100%);
+    transition:
+      transform 0.3s ease-in-out,
+      opacity 0.3s ease-in-out;
+    opacity: 0;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+
+    &--open {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    &--level {
+      @include all-page-levels-background;
+    }
+  }
+
+  &__header {
+    display: flex;
+    padding: $spacing-16;
+    align-items: center;
+    gap: $spacing-8;
+    align-self: stretch;
+    border-bottom: 1px solid $neutral-20;
+
+    #{$Button} {
+      padding: 0;
+    }
+  }
+
+  &__title {
+    flex: 1 0 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    @include title-medium;
+  }
+
+  &__print {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    align-self: stretch;
+    padding: 0 $spacing-16;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    padding: $spacing-4 $spacing-16 $spacing-16;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    gap: $spacing-12;
+    width: 100%;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: $crocus-30;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $crocus-100;
+      border-radius: 10px;
+      border: none;
+    }
+
+    &--level {
+      @include all-levels-scrollbar;
+    }
+  }
+}

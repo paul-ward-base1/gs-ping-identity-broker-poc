@@ -1,0 +1,1 @@
+export { AwardPageClient } from './AwardPageClient';

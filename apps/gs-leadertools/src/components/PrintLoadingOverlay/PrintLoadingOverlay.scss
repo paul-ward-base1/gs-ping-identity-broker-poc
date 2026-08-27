@@ -1,0 +1,39 @@
+#{$PrintLoadingOverlay} {
+  position: fixed;
+  inset: 0;
+  // One layer above Modal / LanguageSwitcher (1000) so it blocks re-clicks on
+  // any print trigger, including those rendered inside an open side panel.
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+  animation: gs-print-loading-fade 160ms ease-out;
+
+  &__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@keyframes gs-print-loading-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #{$PrintLoadingOverlay} {
+    animation: none;
+  }
+}

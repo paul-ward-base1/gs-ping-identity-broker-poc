@@ -1,0 +1,173 @@
+.membership-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.membership-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: left;
+  background: var(--color-white);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+  font-family: var(--font-family);
+}
+
+.membership-card:hover {
+  border-color: var(--color-primary);
+}
+
+.membership-card--selected {
+  border-color: var(--color-primary);
+  background: rgba(0, 86, 64, 0.06);
+}
+
+/* Radio */
+.membership-card-check {
+  flex-shrink: 0;
+}
+
+.membership-radio {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  background: var(--color-white);
+}
+
+.membership-card--selected .membership-radio {
+  border-color: var(--color-primary);
+}
+
+.membership-radio-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}
+
+/* Card body */
+.membership-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.membership-name {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-dark);
+  line-height: 1.3;
+}
+
+.membership-date-range {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-muted);
+}
+
+/* Price */
+.membership-card-price {
+  flex-shrink: 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: flex-start;
+}
+
+.membership-price-currency {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.6;
+}
+
+.membership-price-currency--large {
+  font-size: var(--font-size-md);
+  line-height: 2;
+}
+
+/* Note beneath cards */
+.membership-note {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+/* Cost summary panel */
+.membership-cost-summary {
+  background: var(--color-card-bg);
+  border-radius: var(--border-radius-md);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.membership-cost-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+}
+
+.membership-cost-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.membership-cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-dark);
+}
+
+.membership-cost-fee-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.membership-cost-divider {
+  height: 1px;
+  background: var(--color-border);
+}
+
+.membership-cost-total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-dark);
+}
+
+.membership-total-amount {
+  font-size: 36px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-dark);
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+/* Validation error */
+.membership-error {
+  font-size: var(--font-size-sm);
+  color: var(--color-error);
+  line-height: 1.5;
+}

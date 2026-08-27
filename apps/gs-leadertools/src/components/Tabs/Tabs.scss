@@ -1,0 +1,64 @@
+#{$Tabs} {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  border: 1px solid $secondary;
+  overflow: hidden;
+  width: 100%;
+
+  @include breakpoint(tablet-large) {
+    width: fit-content;
+  }
+
+  &:focus-visible {
+    @include focus-state;
+  }
+
+  &__tab {
+    display: flex;
+    padding: $spacing-10 $spacing-16;
+    border-radius: 8px 0 0 8px;
+    justify-content: center;
+    align-items: center;
+    gap: $spacing-8;
+    font-weight: 600;
+    color: $secondary;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+
+    &:first-child {
+      border-radius: 8px 0 0 8px;
+    }
+
+    &:last-child {
+      border-radius: 0 8px 8px 0;
+    }
+
+    &--active {
+      background-color: $secondary;
+      color: white;
+      border-radius: 50px;
+    }
+
+    &:focus-visible {
+      background-color: $tertiary;
+      opacity: 0.5;
+    }
+
+    @include breakpoint(tablet-large) {
+      width: fit-content;
+    }
+  }
+
+  &__label {
+    @include label-small;
+
+    @include breakpoint(tablet) {
+      @include label-default();
+    }
+  }
+}

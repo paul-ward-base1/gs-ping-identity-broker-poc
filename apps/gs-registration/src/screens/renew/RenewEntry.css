@@ -1,0 +1,49 @@
+.renew-entry-forgot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.renew-entry-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.renew-entry-demo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.renew-entry-divider {
+  position: relative;
+  text-align: center;
+  margin: var(--space-md) 0;
+}
+
+.renew-entry-divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.renew-entry-divider span {
+  position: relative;
+  background: var(--color-white);
+  padding: 0 var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}

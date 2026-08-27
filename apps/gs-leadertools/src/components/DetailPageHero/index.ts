@@ -1,0 +1,1 @@
+export { DetailPageHero } from './DetailPageHero';
