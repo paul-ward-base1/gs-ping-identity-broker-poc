@@ -1,4 +1,4 @@
-# gs-ping-setup-poc
+# gs-ping-identity-broker-poc
 
 A proof-of-concept pnpm/Turborepo monorepo exploring CIAM (Customer Identity & Access Management) SSO via PingOne. Two mock relying-party apps (`mock-shop`, `mock-mygs`) share a broker-based OIDC login and session state through a common `@ciam-poc/auth` package, so single sign-on / single sign-out behavior can be demonstrated across apps. The repo also hosts a couple of unrelated Girl Scouts prototypes (`gs-registration`, `gs-leadertools`).
 
@@ -53,12 +53,42 @@ pnpm dev:mygs     # mock-mygs only
 
 ## Apps
 
-| App | Description | Run command | Port | Local URL |
-|---|---|---|---|---|
-| [`mock-shop`](./apps/mock-shop) | Mock e-commerce relying-party app; signs in via the shared PingOne OIDC broker | `pnpm dev:shop` | 3100 | http://girlscoutsshop.local:3100 |
-| [`mock-mygs`](./apps/mock-mygs) | Mock "MyGS" member-portal relying-party app; shares SSO session with `mock-shop` | `pnpm dev:mygs` | 3200 | http://my-gs.local:3200 |
-| [`gs-registration`](./apps/gs-registration) | Standalone React/Vite prototype for the simplified member registration flow (client-side only, no backend) | `cd apps/gs-registration && pnpm dev` | 3300 | http://gsregistration.local:3300 |
-| [`gs-leadertools`](./apps/gs-leadertools) | Unrelated Next.js app for the Girl Scouts Virtual Trail Kit (badges/activities via AEM). Excluded from this pnpm workspace — see its own README | `cd apps/gs-leadertools && yarn install && ENV=dev yarn dev` | 3000 | http://leadertools.local:3000 |
+| App | URL | Port |
+|---|---|---|
+| [Mock Shop](./apps/mock-shop) | https://girlscoutsshop.local | 3100 |
+| [Mock myGS](./apps/mock-mygs) | https://my-gs.local | 3200 |
+| [GS Registration](./apps/gs-registration) | https://gsregistration.local | 3300 |
+| [Leader Tools (VTK)](./apps/gs-leadertools) | https://leadertools.local | 3000 |
+
+`https://` URLs above require the [Caddy HTTPS setup](#local-hostnames-over-real-https-optional) below; without Caddy running, use `http://<hostname>:<port>` instead (e.g. `http://girlscoutsshop.local:3100`).
+
+### Test Credentials
+
+| User | Email | Password | IdP |
+|---|---|---|---|
+| CDC Consumer | `ryan.mchale+ciampoc@base1.com` | `Testing123!` | Gigya (SAP CDC) |
+| Okta Admin | `pward+counciluser@girlscouts.org` | `Testing123!` | Okta Workforce |
+
+> **Okta sign-in is currently blocked.** PingOne's outbound SAML `AuthnRequest` omits `NameIDPolicy`, so Okta authenticates the browser but never completes the handoff back to PingOne. See [`docs/ciam-broker-poc-findings.md`](./docs/ciam-broker-poc-findings.md) for the current status and proposed workaround. The Gigya credential above works end-to-end.
+
+## Architecture
+
+```text
+Upstream IdPs          Broker                    Downstream Apps
+┌──────────────┐    ┌──────────────────┐    ┌──────────────────────┐
+│ Okta (SAML)  │───▶│                  │───▶│ Mock Shop (:3100)    │
+│              │    │  Ping Identity   │───▶│ Mock myGS (:3200)    │
+│ SAP CDC      │───▶│  (PingOne)       │───▶│ GS Registration      │
+│ (OIDC)       │    │                  │───▶│ Leader Tools (:3000) │
+└──────────────┘    └──────────────────┘    └──────────────────────┘
+```
+
+| App | Description | Run command |
+|---|---|---|
+| [`mock-shop`](./apps/mock-shop) | Mock e-commerce relying-party app; signs in via the shared PingOne OIDC broker | `pnpm dev:shop` |
+| [`mock-mygs`](./apps/mock-mygs) | Mock "MyGS" member-portal relying-party app; shares SSO session with `mock-shop` | `pnpm dev:mygs` |
+| [`gs-registration`](./apps/gs-registration) | Standalone React/Vite prototype for the simplified member registration flow (client-side only, no backend) | `cd apps/gs-registration && pnpm dev` |
+| [`gs-leadertools`](./apps/gs-leadertools) | Unrelated Next.js app for the Girl Scouts Virtual Trail Kit (badges/activities via AEM). Excluded from this pnpm workspace — see its own README | `cd apps/gs-leadertools && yarn install && ENV=dev yarn dev` |
 
 ### Local hostnames
 
@@ -167,3 +197,7 @@ AUTH_SESSION_MAX_AGE=2592000       # optional; revocation TTL and Auth.js max ag
 pnpm build   # turbo build — builds all workspace apps
 pnpm lint    # turbo lint — lints all workspace apps
 ```
+
+## Documentation
+
+- [`docs/ciam-broker-poc-findings.md`](./docs/ciam-broker-poc-findings.md) — current status, behavior, workarounds, and open questions from testing PingOne as the broker (what's working, what's blocked, and why)
