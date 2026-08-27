@@ -20,6 +20,14 @@ pnpm install
 
 This installs and links all workspace apps/packages except `gs-leadertools`, which is excluded from the pnpm workspace (see [`pnpm-workspace.yaml`](./pnpm-workspace.yaml)) and manages its own dependencies separately.
 
+`gs-leadertools` needs its own one-time install before running it, via either `start-dev.sh` or `pnpm dev`:
+
+```bash
+cd apps/gs-leadertools && yarn install
+```
+
+Skipping this leaves `apps/gs-leadertools/node_modules` missing — `start-dev.sh` still launches `yarn dev` for it regardless, which fails immediately with `next: command not found` (visible in `.logs/gs-leadertools.log`), and the app never comes up.
+
 ## Running the apps
 
 The easiest way to start everything (including `gs-leadertools`, which isn't part of the pnpm workspace) is:
