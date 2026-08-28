@@ -159,6 +159,19 @@ Apply or remove that PingOne configuration through the same secure management sc
 
 Both commands preserve the other Gigya provider fields and securely prompt for the `poc-mgmt-api` Worker secret. The restore action reads the real authorization endpoint from Gigya's current discovery metadata instead of relying on a hard-coded backup.
 
+If the PingOne console cannot save an authentication policy that references the
+API-created Gigya provider, update the existing `Gigya-Federated` policy action
+through the same Worker application:
+
+```bash
+./scripts/audit-pingone-idp.sh --apply-gigya-federated-sso-window
+```
+
+This guarded action requires exactly one `Gigya-Federated` policy and one
+`IDENTITY_PROVIDER` action. It replaces a stale provider reference with the
+enabled Gigya OIDC provider, preserves the other action settings, and configures
+Gigya reauthentication only when the PingOne sign-on is older than eight hours.
+
 Relevant vendor references: [PingOne OIDC application sign-off settings](https://docs.pingidentity.com/pingone/applications/p1_edit_application_singlepage.html), [PingOne generic external OIDC IdP settings](https://docs.pingidentity.com/pingone/integrations/p1_add_idp_oidc.html), and [SAP CDC RP-Initiated Logout](https://help.sap.com/docs/SAP_CUSTOMER_DATA_CLOUD/8b8d6fffe113457094a17701f63e3d6a/1953bd89795f4e769b34ef780acb8c29.html).
 
 ## Packages

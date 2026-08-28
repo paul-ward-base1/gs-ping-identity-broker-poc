@@ -95,7 +95,11 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
           ) : (
             <button className="login-btn" onClick={() => {
               console.log('[debug] Sign in clicked')
-              auth.signinRedirect({ extraQueryParams: { acr_values: 'GigyaOnly' } })
+              // Do not force Gigya here. With no acr_values, PingOne can reuse
+              // an existing broker session established through Okta. When no
+              // broker session exists, the application's first assigned policy
+              // (Gigya-Federated) remains the default interactive login.
+              auth.signinRedirect()
                 .catch(err => console.error('[debug] signinRedirect failed:', err))
             }}>
               <PersonIcon /> Sign in

@@ -87,7 +87,7 @@ export function RenewEntry() {
             <span>or</span>
           </div>
 
-          <Button onClick={() => auth.signinRedirect()}>
+          <Button type="button" onClick={() => auth.signinRedirect()}>
             Sign in with Girl Scouts
           </Button>
 

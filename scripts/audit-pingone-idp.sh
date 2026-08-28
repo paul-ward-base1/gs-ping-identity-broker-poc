@@ -10,6 +10,8 @@ PINGONE_API_BASE_URL="${PINGONE_API_BASE_URL:-https://api.pingone.ca/v1}"
 
 action="audit"
 GIGYA_FORCE_LOGIN_PROXY_URL="${GIGYA_FORCE_LOGIN_PROXY_URL:-https://cdc-login.gsusa.local/api/auth/gigya-authorize}"
+GIGYA_FEDERATED_POLICY_NAME="${GIGYA_FEDERATED_POLICY_NAME:-Gigya-Federated}"
+GIGYA_FEDERATED_SSO_WINDOW_SECONDS="${GIGYA_FEDERATED_SSO_WINDOW_SECONDS:-28800}"
 
 usage() {
   cat <<'EOF'
@@ -30,6 +32,12 @@ authorization before redirecting the browser to Gigya.
 With --restore-gigya-authorization-endpoint, the script restores Gigya's
 authorizationEndpoint from its current OIDC discovery metadata.
 
+With --apply-gigya-federated-sso-window, the script updates the existing
+Gigya-Federated IDENTITY_PROVIDER policy action to reference the enabled Gigya
+provider and require Gigya only when the PingOne sign-on is older than eight
+hours. It preserves the action's priority, user-context, registration, and ACR
+settings.
+
 The script securely prompts for the poc-mgmt-api Worker client secret. You may
 also provide it through PINGONE_WORKER_CLIENT_SECRET for non-interactive use.
 
@@ -39,6 +47,8 @@ Optional overrides:
   PINGONE_AUTH_BASE_URL
   PINGONE_API_BASE_URL
   GIGYA_FORCE_LOGIN_PROXY_URL
+  GIGYA_FEDERATED_POLICY_NAME
+  GIGYA_FEDERATED_SSO_WINDOW_SECONDS
 EOF
 }
 
@@ -47,6 +57,7 @@ case "${1:-}" in
   --apply-gigya-logout) action="apply_logout" ;;
   --apply-gigya-force-login-proxy) action="apply_force_login_proxy" ;;
   --restore-gigya-authorization-endpoint) action="restore_authorization_endpoint" ;;
+  --apply-gigya-federated-sso-window) action="apply_federated_sso_window" ;;
   --help|-h)
     usage
     exit 0
@@ -63,6 +74,11 @@ for dependency in curl jq base64; do
     exit 1
   fi
 done
+
+if [[ ! "$GIGYA_FEDERATED_SSO_WINDOW_SECONDS" =~ ^[1-9][0-9]*$ ]]; then
+  echo "GIGYA_FEDERATED_SSO_WINDOW_SECONDS must be a positive integer." >&2
+  exit 1
+fi
 
 worker_secret="${PINGONE_WORKER_CLIENT_SECRET:-}"
 if [[ -z "$worker_secret" ]]; then
@@ -380,6 +396,172 @@ inspect_provider() {
   fi
 }
 
+apply_gigya_federated_sso_window() {
+  local provider_summary="$1"
+  local provider_id
+  local policies_url
+  local policies
+  local policy_matches
+  local policy_count
+  local policy_id
+  local actions_url
+  local actions
+  local action_matches
+  local action_count
+  local policy_action
+  local policy_action_id
+  local current_provider_id
+  local update_payload
+
+  if [[ -z "$provider_summary" ]]; then
+    echo "Refusing to update the policy because no Gigya provider was found." >&2
+    return 1
+  fi
+
+  provider_id="$(jq -r '.id // empty' <<<"$provider_summary")"
+  if [[ -z "$provider_id" ]] || ! jq -e '.enabled == true and .type == "OPENID_CONNECT"' <<<"$provider_summary" >/dev/null; then
+    echo "Refusing to update the policy because the discovered Gigya provider is not an enabled OIDC provider." >&2
+    return 1
+  fi
+
+  policies_url="$PINGONE_API_BASE_URL/environments/$PINGONE_ENVIRONMENT_ID/signOnPolicies"
+  pingone_request GET "$policies_url?limit=100"
+  if [[ "$HTTP_STATUS" != "200" ]]; then
+    print_api_error "Listing PingOne authentication policies"
+    return 1
+  fi
+
+  policies="$(jq -c '._embedded.signOnPolicies // .signOnPolicies // []' <<<"$HTTP_BODY")"
+  policy_matches="$(jq -c --arg name "$GIGYA_FEDERATED_POLICY_NAME" '[.[] | select(.name == $name)]' <<<"$policies")"
+  policy_count="$(jq 'length' <<<"$policy_matches")"
+  if [[ "$policy_count" != "1" ]]; then
+    echo "Refusing to update: expected exactly one policy named '$GIGYA_FEDERATED_POLICY_NAME', found $policy_count." >&2
+    return 1
+  fi
+
+  policy_id="$(jq -r '.[0].id' <<<"$policy_matches")"
+  actions_url="$policies_url/$policy_id/actions"
+  pingone_request GET "$actions_url"
+  if [[ "$HTTP_STATUS" != "200" ]]; then
+    print_api_error "Reading $GIGYA_FEDERATED_POLICY_NAME policy actions"
+    return 1
+  fi
+
+  actions="$(jq -c '._embedded.actions // ._embedded.signOnPolicyActions // .actions // []' <<<"$HTTP_BODY")"
+  action_matches="$(jq -c '[.[] | select(.type == "IDENTITY_PROVIDER")]' <<<"$actions")"
+  action_count="$(jq 'length' <<<"$action_matches")"
+  if [[ "$action_count" != "1" ]]; then
+    echo "Refusing to update: expected exactly one IDENTITY_PROVIDER action in '$GIGYA_FEDERATED_POLICY_NAME', found $action_count." >&2
+    return 1
+  fi
+
+  policy_action="$(jq -c '.[0]' <<<"$action_matches")"
+  policy_action_id="$(jq -r '.id // empty' <<<"$policy_action")"
+  current_provider_id="$(jq -r '.identityProvider.id // empty' <<<"$policy_action")"
+
+  if [[ -z "$policy_action_id" ]] ||
+     ! jq -e '
+       (.priority | type) == "number"
+       and ((.passUserContext == null) or ((.passUserContext | type) == "boolean"))
+       and ((.registration == null) or ((.registration | type) == "object"))
+       and ((.registration.enabled == null) or ((.registration.enabled | type) == "boolean"))
+     ' <<<"$policy_action" >/dev/null; then
+    echo "Refusing to update: the existing policy action is missing required fields." >&2
+    return 1
+  fi
+
+  echo
+  echo "Authentication policy update plan:"
+  jq -n \
+    --arg policy "$GIGYA_FEDERATED_POLICY_NAME" \
+    --arg actionId "$policy_action_id" \
+    --arg currentProviderId "$current_provider_id" \
+    --arg targetProviderId "$provider_id" \
+    --argjson seconds "$GIGYA_FEDERATED_SSO_WINDOW_SECONDS" \
+    --argjson action "$policy_action" \
+    '{
+      policy: $policy,
+      actionId: $actionId,
+      currentProviderId: $currentProviderId,
+      targetProviderId: $targetProviderId,
+      lastSignOnOlderThanSeconds: $seconds,
+      preservedActionSettings: {
+        priority: $action.priority,
+        passUserContext: ($action.passUserContext // false),
+        registration: ($action.registration // {enabled: false}),
+        acrValues: $action.acrValues
+      }
+    }'
+
+  if jq -e \
+    --arg providerId "$provider_id" \
+    --argjson seconds "$GIGYA_FEDERATED_SSO_WINDOW_SECONDS" \
+    '.identityProvider.id == $providerId
+      and .condition.greater == $seconds
+      and .condition.secondsSince == "${session.lastSignOn.withAuthenticator.pwd.at}"' \
+    <<<"$policy_action" >/dev/null; then
+    echo "The policy action already has the requested Gigya provider and SSO window; no update is needed."
+    return
+  fi
+
+  update_payload="$(jq -c \
+    --arg providerId "$provider_id" \
+    --argjson seconds "$GIGYA_FEDERATED_SSO_WINDOW_SECONDS" \
+    '{
+      type: "IDENTITY_PROVIDER",
+      identityProvider: {id: $providerId},
+      priority,
+      passUserContext: (.passUserContext // false),
+      registration: ((.registration // {}) + {
+        enabled: (.registration.enabled // false)
+      }),
+      condition: {
+        greater: $seconds,
+        secondsSince: "${session.lastSignOn.withAuthenticator.pwd.at}"
+      }
+    }
+    + (if .acrValues != null then {acrValues} else {} end)
+    + (if .entraIdEnabled != null then {entraIdEnabled} else {} end)' \
+    <<<"$policy_action")"
+
+  echo "Updating only the Gigya provider reference and last-sign-on condition..."
+  pingone_request PUT "$actions_url/$policy_action_id" 'application/json' "$update_payload"
+  if [[ "$HTTP_STATUS" != "200" ]]; then
+    print_api_error "Updating $GIGYA_FEDERATED_POLICY_NAME policy action"
+    return 1
+  fi
+
+  pingone_request GET "$actions_url/$policy_action_id"
+  if [[ "$HTTP_STATUS" != "200" ]]; then
+    print_api_error "Verifying $GIGYA_FEDERATED_POLICY_NAME policy action"
+    return 1
+  fi
+
+  if ! jq -e \
+    --arg providerId "$provider_id" \
+    --argjson seconds "$GIGYA_FEDERATED_SSO_WINDOW_SECONDS" \
+    '.type == "IDENTITY_PROVIDER"
+      and .identityProvider.id == $providerId
+      and .condition.greater == $seconds
+      and .condition.secondsSince == "${session.lastSignOn.withAuthenticator.pwd.at}"' \
+    <<<"$HTTP_BODY" >/dev/null; then
+    echo "PingOne accepted the update, but read-back verification did not match the requested settings." >&2
+    return 1
+  fi
+
+  echo "$GIGYA_FEDERATED_POLICY_NAME policy action verified:"
+  jq '{
+    id,
+    type,
+    priority,
+    identityProvider,
+    condition,
+    passUserContext,
+    registration,
+    acrValues
+  }' <<<"$HTTP_BODY"
+}
+
 gigya_provider="$(
   jq -c '[.[] | select(
     ((.name // "") | test("gigya|cdc|dev-parent-gsusa"; "i")) or
@@ -399,5 +581,9 @@ unset providers
 
 inspect_provider "Gigya" "$gigya_provider"
 inspect_provider "Okta" "$okta_provider"
+
+if [[ "$action" == "apply_federated_sso_window" ]]; then
+  apply_gigya_federated_sso_window "$gigya_provider"
+fi
 
 unset access_token gigya_provider okta_provider HTTP_BODY HTTP_STATUS
