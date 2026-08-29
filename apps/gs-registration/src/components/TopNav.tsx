@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
+import { pingOneSamlSloUrl } from '../auth/oidc-config'
+import { OKTA_UPSTREAM_IDP } from '../auth/pingone-saml-logout'
 import './TopNav.css'
 import gsLogo from '../assets/gs-logo.png'
 
@@ -77,6 +79,7 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
             </span>
             <button className="login-btn" onClick={async () => {
               sessionStorage.setItem("sso-checked", Date.now().toString());
+              const upstreamIdp = auth.user?.profile.identity_provider as string | undefined;
               try {
                 if (auth.user?.id_token) {
                   await fetch('/api/auth/revoke-session', {
@@ -86,7 +89,21 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
                   })
                 }
               } finally {
-                await auth.signoutRedirect();
+                if (upstreamIdp === OKTA_UPSTREAM_IDP && pingOneSamlSloUrl) {
+                  // Remove only Registration's local OIDC state. The PingOne
+                  // browser session must remain available until startslo uses
+                  // its record of the participating Okta SAML IdP.
+                  try {
+                    await auth.removeUser()
+                  } finally {
+                    window.location.assign(pingOneSamlSloUrl)
+                  }
+                } else {
+                  // Preserve the existing Gigya POC flow: PingOne OIDC signoff
+                  // returns through /post-signoff, which marks the next
+                  // interactive Gigya authorization for prompt=login.
+                  await auth.signoutRedirect()
+                }
               }
             }}>
               {auth.user?.profile.given_name ?? 'User'} · Sign out

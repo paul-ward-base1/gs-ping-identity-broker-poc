@@ -10,7 +10,7 @@ The POC demonstrates that Girl Scouts applications can use PingOne as their only
 
 Gigya authentication, Okta SAML authentication, and cross-application PingOne SSO now work. A user authenticated through Okta in Leader Tools can open Registration and be signed in automatically through the existing PingOne session. When no usable PingOne session exists, Registration continues to use Gigya as its interactive authentication source.
 
-The remaining functional gap is upstream logout. The Gigya POC uses a forced-reauthentication marker that produces a fresh Gigya credential challenge but does not terminate the underlying Gigya session. Okta SAML single logout (SLO) is now configured on both sides, and a direct PingOne SLO test produces a signed SAML `LogoutRequest` for the correct Okta endpoint. The Okta browser session nevertheless remains active. Okta receipt and processing of that request must still be verified before the shared application logout flow is updated to initiate broker-owned SAML SLO.
+The remaining functional gap is upstream logout. The Gigya POC uses a forced-reauthentication marker that produces a fresh Gigya credential challenge but does not terminate the underlying Gigya session. Okta SAML single logout (SLO) is now configured on both sides, and a direct PingOne SLO test completes a signed request/response exchange with an Okta `Success` result. Provider-aware application logout orchestration is implemented in both Leader Tools and Registration, but the Okta browser session nevertheless remains active. Okta session handling remains the external blocker, and the new application paths still require live browser verification.
 
 ## Target architecture
 
@@ -221,20 +221,26 @@ A user authenticated through Okta in Leader Tools can open Registration in the s
 
 This validates the core broker requirement: the applications trust PingOne, and a PingOne session established through either approved upstream provider can be reused by another application.
 
-### 5. Application logout does not yet terminate the Okta session
+### 5. Application logout now initiates provider-aware broker logout
 
-Leader Tools and Registration can clear their local sessions and shared downstream revocation state. Their normal broker logout is OIDC-based, however, and PingOne documents that signing out from an OIDC application does not automatically trigger SAML SLO.
+Leader Tools and Registration first clear their local sessions and shared downstream revocation state. Logout then branches on PingOne's `identity_provider` claim:
 
-Current observed behavior is therefore:
+- `okta-workforce` redirects to PingOne `/saml20/startslo` while the PingOne browser session still contains its upstream SAML participant context;
+- `gigya-b2c` retains the existing PingOne OIDC signoff followed by the POC-only Gigya forced-reauthentication marker; and
+- an unavailable or invalid SAML SLO URL safely falls back to the existing OIDC signoff path.
+
+Leader Tools accepts an optional server-side `PINGONE_SAML_SLO_URL`. Registration accepts an optional build-time `VITE_PINGONE_SAML_SLO_URL`. Without an override, both derive the SAML endpoint from the HTTPS PingOne OIDC issuer or authority rather than hard-coding an environment-specific logout URL in the control flow.
+
+The implemented Okta path is therefore:
 
 ```text
 Application session: logged out
 Shared downstream sessions: revoked
-PingOne OIDC session: logged out
-Okta browser session: still authenticated
+PingOne SAML SLO: initiated before OIDC signoff
+Okta browser session: expected to be logged out, but direct testing still shows it active
 ```
 
-The next **Council Sign In** can complete at Okta without another credential prompt because the Okta browser session still exists. This is the remaining Okta functional gap, not an Okta login-policy failure.
+The code path is complete but has not yet been live-tested from both applications. Even after direct SAML SLO, the next **Council Sign In** can complete at Okta without another credential prompt because the Okta browser session still exists. This is the remaining Okta functional gap, not an Okta login-policy failure.
 
 ### 6. Okta SAML SLO configuration and outbound request generation are verified
 
@@ -262,20 +268,22 @@ A direct browser test of PingOne's `/saml20/startslo` endpoint reached PingOne's
 - both `NameID` and `SessionIndex`; and
 - an embedded XML signature.
 
-The form is configured to submit automatically to Okta. This verifies PingOne's SLO configuration and outbound request construction. It does not yet prove that Okta accepted the request or terminated its browser session.
+The form is configured to submit automatically to Okta. The captured browser sequence was `startslo` → Okta `saml` → PingOne `slo`. The embedded Okta response was safely decoded and verified as a signed SAML `LogoutResponse` with:
+
+- the expected Okta entity ID as `Issuer`;
+- PingOne `/saml20/sp/slo` as the destination;
+- an `InResponseTo` reference; and
+- SAML status `Success`.
+
+This proves that Okta received the request and returned a successful signed SAML response that PingOne accepted before displaying **Signed Off**. It does not prove that Okta terminated its organization browser session.
 
 ### 7. Okta browser-session termination remains unresolved
 
 After the direct PingOne SLO test, Okta's `/api/v1/sessions/me` endpoint continued to report the same browser session as active. Closing and reopening the browser and clearing the application cache did not change the result. This is stronger evidence than the absence of a credential prompt because Okta can otherwise reuse a session through device or authentication policy behavior.
 
-The remaining fault boundary is the browser-mediated SAML exchange from PingOne to Okta. The next diagnostic evidence must be either:
+The SAML transport, endpoint, issuer, request signature, correlation, and success response are no longer the unresolved fault boundary. Okta System Log evidence is still needed at the test timestamp, especially `user.authentication.slo` and `user.session.end`. If Okta records successful SLO but no session-end event, or records a session-end event while the same session ID remains active, Okta session handling requires vendor investigation.
 
-1. the HTTP status and redirect chain for the Okta `/slo/saml` request, without sharing the encoded SAML payload or browser cookies; or
-2. Okta System Log events at the test timestamp, especially `user.authentication.slo`, `user.session.end`, and any signature, issuer, `NameID`, or `SessionIndex` validation failure.
-
-If Okta records no SLO event, the browser request did not reach Okta. If Okta records a validation failure, its reason identifies the remaining configuration mismatch. If Okta records successful SLO but leaves the same session active, Okta session handling requires vendor investigation.
-
-Only after direct PingOne-to-Okta session termination works should the application logout orchestration be changed to initiate PingOne SAML SLO while the PingOne session still contains the Okta participation context. Registration and Leader Tools should use the same broker-owned logout behavior; neither application should call Okta directly or contain Okta certificates or credentials.
+The application orchestration now initiates PingOne SAML SLO while PingOne still has the upstream Okta participation context. Registration and Leader Tools use the same broker-owned behavior and do not call Okta directly or contain Okta certificates or credentials. Live browser verification from both logout buttons remains pending.
 
 ### 8. A parallel Okta OIDC provider is no longer required for the POC login path
 
@@ -291,7 +299,7 @@ A parallel Okta OIDC provider was considered while SAML authentication was block
 - A real cloud-to-localhost back-channel push cannot be demonstrated without a publicly reachable HTTPS callback.
 - PingOne discovery in the tested tenant does not advertise OIDC back-channel logout support.
 - The Gigya forced-login marker and authorization proxy make the next interactive Gigya request use `prompt=login`; they do not terminate the upstream Gigya session.
-- The current OIDC application logout does not trigger SAML SLO and therefore does not terminate the upstream Okta session.
+- Okta-backed application logout now initiates PingOne SAML SLO before OIDC signoff; Gigya-backed logout retains the existing OIDC and forced-reauthentication path.
 - If a user authenticates through Okta in Leader Tools and then enters Registration through PingOne SSO, logging out from either application must eventually invoke the same broker-owned SAML SLO flow to meet the requirement that Okta also be released.
 
 Redis-based downstream revocation and upstream identity-provider logout are separate concerns. Redis can invalidate sessions in the POC applications, but it cannot terminate the browser's Gigya or Okta session.
@@ -320,8 +328,9 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 | Conditional `Gigya-Federated` policy | Verified | API repair selected provider `3e182f33-996f-47f8-bae4-e2c7914c95d8` and stored an eight-hour last-sign-on condition. |
 | Okta SAML SLO configuration | Verified | Okta publishes its IdP SLO endpoint; PingOne stores that endpoint with `HTTP_POST`, a two-hour SLO window, and the Okta verification certificate. |
 | PingOne outbound Okta `LogoutRequest` | Verified | Direct `/saml20/startslo` testing produced an auto-posted, signed request with the correct destination and issuer plus `NameID` and `SessionIndex`. |
-| Okta upstream session termination | Pending investigation | The same Okta browser session remained active after direct PingOne SLO. Confirm Okta receipt and processing through the network response and Okta System Log. |
-| Logout from either app clears Okta | Pending | First resolve direct Okta session termination, then add shared broker-owned SAML SLO initiation to both application logout flows. |
+| Okta upstream session termination | Pending investigation | Okta received the request and returned signed SAML `Success`, but the same Okta browser session remained active. Inspect the corresponding Okta System Log events. |
+| Provider-aware application logout orchestration | Implemented; live verification pending | Both apps revoke downstream state first, use SAML `startslo` for `okta-workforce`, and retain the existing Gigya signoff path. |
+| Logout from either app clears Okta | Pending external resolution | Application SAML SLO initiation is implemented, but Okta still leaves its organization browser session active after returning SAML `Success`. |
 | Parallel Okta OIDC provider | Deferred | No longer required for the working POC login path. |
 | Okta dashboard tile | Not supported | IdP-initiated launch lacks PingOne RelayState. |
 
@@ -337,19 +346,19 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 ## Questions for Okta
 
 1. Does the System Log record `user.authentication.slo` when PingOne initiates the verified signed `LogoutRequest`?
-2. If Okta rejects the request, what signature, issuer, `NameID`, or `SessionIndex` validation reason is recorded?
-3. If Okta accepts the request, why does `/api/v1/sessions/me` continue to report the same browser session as active?
+2. Does the successful SAML exchange produce `user.session.end`, or does Okta treat application-initiated SLO as ending only the application session?
+3. Why does `/api/v1/sessions/me` continue to report the same browser session as active after Okta returns signed SAML `Success`?
 4. Can the dashboard tile be hidden so users do not attempt the unsupported IdP-initiated flow?
 5. If signed authentication requests are mandatory in production, would an Okta OIDC application or another supported SAML configuration be acceptable for this broker connection?
 
 ## Recommended next steps
 
-1. Capture the Okta `/slo/saml` request's URL, method, status, and redirect chain during a fresh direct `/saml20/startslo` test. Do not retain or share the encoded SAML payload, cookies, or a full HAR file.
-2. Have the Okta administrator inspect System Log events at the same timestamp for `user.authentication.slo`, `user.session.end`, and SAML validation failures.
-3. Resolve any Okta-side validation or session-termination issue and repeat the direct test until `/api/v1/sessions/me` no longer reports the original session as active.
-4. Update the shared application logout orchestration to initiate PingOne SAML SLO while PingOne still has the upstream Okta participation context. Do not call Okta directly from Registration or Leader Tools.
-5. Verify Leader Tools logout: authenticate through Okta, log out, and confirm the original Okta browser session is no longer active.
-6. Verify Registration logout after Okta SSO: authenticate through Okta in Leader Tools, enter Registration silently, log out from Registration, and confirm both applications and the Okta session are logged out.
+1. Have the Okta administrator inspect System Log events at the direct-test timestamp for `user.authentication.slo`, `user.session.end`, and any session-policy event accompanying the successful SAML exchange.
+2. Resolve the Okta session-termination behavior and repeat the direct test until `/api/v1/sessions/me` no longer reports the original session as active.
+3. Live-test Leader Tools logout: authenticate through Okta, select **Sign Out**, verify the `startslo` → Okta `saml` → PingOne `slo` sequence, and inspect the Okta session.
+4. Live-test Registration logout after Okta SSO: authenticate through Okta in Leader Tools, enter Registration silently, log out from Registration, and confirm the same SAML sequence and downstream revocation behavior.
+5. After the Okta issue is resolved, repeat both application tests and confirm the original Okta browser session is no longer active.
+6. Verify the optional `PINGONE_SAML_SLO_URL` and `VITE_PINGONE_SAML_SLO_URL` overrides in the deployment environments or leave them unset to use issuer-based derivation.
 7. Re-run the Gigya logout scenarios to ensure the existing forced-reauthentication fallback remains intact.
 8. Confirm the previously exposed Worker secret has been revoked and retain only a securely stored replacement.
 9. Review the Gigya and Okta interoperability findings with Ping Identity before treating either workaround as a production design.

@@ -127,9 +127,22 @@ Two things worth knowing:
 The applications now preserve the broker boundary during logout:
 
 1. The initiating app records its PingOne `sid` and a subject revocation cutoff in Redis. This invalidates existing sessions in the other POC apps without invalidating a new session created after the logout.
-2. The app clears its own session and sends the browser to PingOne's advertised `end_session_endpoint` (`/signoff`) with the PingOne ID token as `id_token_hint`.
-3. The other Next.js apps check the shared revocation state while resolving their Auth.js session. `gs-registration` polls its server-side session-status endpoint with its signed ID token; the same API is mounted by both the production Express server and the normal Vite dev server.
-4. Each `/api/auth/backchannel-logout` endpoint also supports a real OIDC logout token. It verifies the JWT signature against the broker's discovery/JWKS metadata and validates issuer, audience, age, event, nonce, and `sid`/`sub` claims before writing revocation state.
+2. The app clears its own local session and selects the broker logout mechanism from PingOne's `identity_provider` claim.
+3. An Okta-backed session redirects to PingOne's SAML `/saml20/startslo` endpoint before an OIDC signoff can destroy PingOne's upstream-participant context. A Gigya-backed session retains the existing PingOne OIDC `/idpSignoff` or `/signoff` path and POC forced-reauthentication marker.
+4. The other Next.js apps check the shared revocation state while resolving their Auth.js session. `gs-registration` polls its server-side session-status endpoint with its signed ID token; the same API is mounted by both the production Express server and the normal Vite dev server.
+5. Each `/api/auth/backchannel-logout` endpoint also supports a real OIDC logout token. It verifies the JWT signature against the broker's discovery/JWKS metadata and validates issuer, audience, age, event, nonce, and `sid`/`sub` claims before writing revocation state.
+
+The SAML SLO URL is not tied to the current environment ID in logout code. Leader Tools reads the optional server-side `PINGONE_SAML_SLO_URL`; Registration reads the optional build-time `VITE_PINGONE_SAML_SLO_URL`. When an override is absent, each app derives `/saml20/startslo` from its HTTPS PingOne OIDC issuer or authority. Example overrides are:
+
+```bash
+# apps/gs-leadertools/.env.local
+PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+
+# gs-registration build/dev environment
+VITE_PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+```
+
+Direct SAML testing verifies that PingOne sends Okta a signed `LogoutRequest` with the expected issuer, `NameID`, and `SessionIndex`; Okta returns a signed `Success` `LogoutResponse`; and PingOne reaches **Signed Off**. Okta's organization browser session nevertheless remains active in the tested tenant. The application orchestration is therefore implemented, but an Okta administrator must still determine why successful application-initiated SLO does not produce the expected Okta session termination.
 
 The POC's PingOne discovery document advertises RP-initiated logout and session checking, but it does not advertise OIDC backchannel logout support. A cloud broker also cannot push to a localhost-only endpoint; testing a real push requires a public HTTPS callback and a broker/application type that supports OIDC Back-Channel Logout.
 

@@ -30,6 +30,7 @@ test-screenshots/
 *.log
 okta_decoded_saml_response.xml
 okta_auth_capture.log
+response.xml
 
 # IntelliJ / JetBrains
 .idea/
