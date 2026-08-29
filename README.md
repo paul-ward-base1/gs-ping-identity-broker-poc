@@ -9,6 +9,7 @@ A proof-of-concept pnpm/Turborepo monorepo exploring CIAM (Customer Identity & A
 - Node.js 22+
 - [pnpm](https://pnpm.io/) 10.33.0 (declared in `package.json#packageManager`; run via [corepack](https://nodejs.org/api/corepack.html) or install directly)
 - Docker with Docker Compose — `start-dev.sh` uses the root [`compose.yml`](./compose.yml) to run the shared Redis service required for downstream logout propagation and backchannel-logout revocation. The apps degrade gracefully if Redis isn't running, so Docker is optional for basic sign-in but required to demonstrate cross-app logout.
+- [Caddy](https://caddyserver.com/) plus the documented `/etc/hosts` entries — optional for mock/localhost development, but required for the current live Gigya flow because its POC authorization proxy is registered at `https://cdc-login.gsusa.local`.
 
 ## Install
 
@@ -20,13 +21,129 @@ pnpm install
 
 This installs and links all workspace apps/packages except `gs-leadertools`, which is excluded from the pnpm workspace (see [`pnpm-workspace.yaml`](./pnpm-workspace.yaml)) and manages its own dependencies separately.
 
-`gs-leadertools` needs its own one-time install before running it, via either `start-dev.sh` or `pnpm dev`:
+`gs-leadertools` needs its own one-time install before running it. Neither the root `pnpm install` nor `start-dev.sh` installs these dependencies:
 
 ```bash
 cd apps/gs-leadertools && yarn install
 ```
 
 Skipping this leaves `apps/gs-leadertools/node_modules` missing — `start-dev.sh` still launches `yarn dev` for it regardless, which fails immediately with `next: command not found` (visible in `.logs/gs-leadertools.log`), and the app never comes up.
+
+## First-time POC configuration
+
+A fresh checkout can start the application development servers after dependency installation, but the authentication flows do **not** run entirely out of the box. Even mock Auth.js login needs a locally generated session secret, and the complete live POC depends on the existing PingOne environment and additional local secrets that are deliberately excluded from Git.
+
+| Component | Secret required locally? | Fresh-checkout behavior |
+|---|---:|---|
+| `mock-shop` / `mock-mygs` mock login | Locally generated Auth.js secret | Runs without PingOne when `AUTH_ISSUER` is unset, but each app still needs `AUTH_SECRET` in its `.env.local` for signed sessions. This is generated locally, not obtained from PingOne. |
+| `mock-shop` / `mock-mygs` real PingOne login | Yes | Each app needs its own PingOne OIDC client ID and client secret plus `AUTH_ISSUER` and `AUTH_SECRET`. |
+| `gs-registration` | No OIDC client secret | Its PingOne SPA client ID and authority are public and currently defined in `src/auth/oidc-config.ts`. The existing PingOne application and registered redirect URIs must still remain available. |
+| `gs-leadertools` | Yes | Requires the Leader Tools PingOne OIDC client ID and client secret plus an Auth.js `AUTH_SECRET` in `apps/gs-leadertools/.env.local`. Without them, the site may start, but **Council Sign In** cannot complete. |
+| Redis logout propagation | No | Uses `redis://localhost:6379` by default. Docker Compose starts it automatically; without Redis, basic login can work but cross-application revocation is unavailable. |
+| `poc-mgmt-api` audit/repair script | Yes, only when the script is run | `scripts/audit-pingone-idp.sh` securely prompts for the Worker client secret. This secret is not used by any browser application or normal application startup. |
+| Upstream Gigya and Okta connections | No local upstream secret | Gigya's client secret and the Okta SAML certificates/settings belong in PingOne/Okta, not in these downstream applications. |
+
+The repository does not provision a new PingOne environment, Okta SAML application, or Gigya OIDC provider from scratch. The current application configuration assumes that the existing POC tenant, applications, authentication policies, external IdPs, redirect URIs, and certificates described in [`docs/ciam-broker-poc-findings.md`](./docs/ciam-broker-poc-findings.md) remain available. Reproducing the POC in another tenant requires recreating those resources; `poc-mgmt-api` is a narrowly scoped Worker application used by the audit/repair script, not a replacement identity provider and not a general environment bootstrapper.
+
+For live Leader Tools authentication, create the ignored `apps/gs-leadertools/.env.local` and obtain the values through the secure POC handoff:
+
+```bash
+AUTH_ISSUER=https://auth.pingone.ca/<environment-id>/as
+AUTH_CLIENT_ID=<leader-tools-pingone-client-id>
+AUTH_CLIENT_SECRET=<leader-tools-pingone-client-secret>
+AUTH_SECRET=<generate-a-separate-random-authjs-secret>
+REDIS_URL=redis://localhost:6379
+
+# Optional; normally derived from AUTH_ISSUER
+PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+```
+
+`AUTH_CLIENT_SECRET` above is the secret for the **Leader Tools PingOne OIDC application**. Do not use the `poc-mgmt-api` Worker secret there. Generate `AUTH_SECRET` locally, for example with `openssl rand -base64 32`; it protects the local Auth.js session and is not supplied by PingOne.
+
+### Finding PingOne IDs and secrets
+
+An administrator can enter the existing environment through the verified [PingOne POC sign-on URL](https://apps.pingone.ca/a6e455f2-da21-4c7d-b40f-8b288a64b010/signon/?flowId=1799aa08-bf92-4e47-8913-1ee2bfef842e), then retrieve the application details as follows:
+
+1. Sign in with an account that has access to administer the POC environment.
+2. Use **Explore** to enter PingOne administration and select the existing POC environment.
+3. Go to **Applications → Applications**.
+4. Open the OIDC application used by Leader Tools.
+5. On **Configuration**, expand **General** and copy the **Environment ID**, **Client ID**, and **Client Secret**. Use the eye and copy controls to reveal/copy the existing secret; do not generate a replacement merely to complete local setup because rotating it can interrupt another developer's configuration.
+6. Store the values only in the ignored `apps/gs-leadertools/.env.local`, using the mapping shown above.
+
+For `poc-mgmt-api`, follow the same path and open that Worker application. Its **Client ID** and **Client Secret** are used only by `scripts/audit-pingone-idp.sh`. Review its **Roles** tab if the script receives an authorization error. Do not place the Worker secret in any application's `AUTH_CLIENT_SECRET` setting.
+
+`gs-registration` is a single-page application using authorization code with PKCE, so its browser configuration uses a public client ID and must not contain a client secret. The mock applications need their own OIDC application credentials only when they are being tested against real PingOne rather than the built-in mock provider.
+
+The working `apps.pingone.ca/.../signon/?flowId=...` link above is the entry point for accessing this PingOne POC environment; it is not itself the page containing application credentials. If that tenant-specific link stops working, ask the PingOne environment owner for its current sign-on URL. Continue to start application authentication tests from `https://leadertools.local` or `https://gsregistration.local` so the complete downstream OIDC authorization and callback context is present.
+
+### Existing Okta SAML configuration
+
+A developer using the existing POC environment does not need an Okta client ID or client secret. The upstream Okta connection is SAML and is already stored in PingOne. The values below are the minimum verified configuration needed to audit the existing setup or reproduce it in another environment.
+
+#### PingOne external IdP (`Okta`)
+
+In PingOne, go to **Integrations → External IdPs**, open **Okta**, and confirm:
+
+| Setting | Verified POC value |
+|---|---|
+| Type | `SAML` |
+| Enabled | Yes |
+| Okta SSO endpoint | `https://integrator-9136098.okta.com/app/integrator-9136098_gsusabrokerpingone_1/exk16f5cj0vhP5Zx9698/sso/saml` |
+| Okta IdP entity ID | `http://www.okta.com/exk16f5cj0vhP5Zx9698` |
+| SSO binding | `HTTP_REDIRECT` |
+| Okta SLO endpoint | `https://integrator-9136098.okta.com/app/integrator-9136098_gsusabrokerpingone_1/exk16f5cj0vhP5Zx9698/slo/saml` |
+| SLO binding | `HTTP_POST` |
+| SLO response endpoint | Not separately specified |
+| SLO window | Two hours |
+| Verification certificate | Current Okta signing certificate from the Okta application metadata |
+| Username mapping | PingOne Username is populated from the SAML assertion subject/NameID; preserve the existing update condition |
+
+The Okta metadata source used for this POC is:
+
+```text
+https://integrator-9136098.okta.com/app/exk16f5cj0vhP5Zx9698/sso/saml/metadata
+```
+
+From the PingOne IdP's **Connection** tab, download the PingOne metadata and signing certificate when configuring or checking the Okta side. The certificate contains a public key and is not an OIDC client secret, but it should still be transferred through the approved team channel rather than pasted into tickets or chat.
+
+#### Okta SAML application (`GSUSA Broker (PingOne)`)
+
+The Okta administrator should confirm:
+
+| Setting | Verified POC value |
+|---|---|
+| Single sign-on URL / ACS | `https://auth.pingone.ca/a6e455f2-da21-4c7d-b40f-8b288a64b010/saml20/sp/acs` |
+| Audience URI / SP entity ID | `https://auth.pingone.ca/1cc700eb-f1ae-4700-16b7-6a7c0af53cd3` |
+| Name ID format | `Unspecified` |
+| Signed Requests | Disabled for the POC |
+| Allow application to initiate Single Logout | Enabled |
+| Single Logout URL | `https://auth.pingone.ca/a6e455f2-da21-4c7d-b40f-8b288a64b010/saml20/sp/slo` |
+| SP Issuer | `https://auth.pingone.ca/1cc700eb-f1ae-4700-16b7-6a7c0af53cd3` |
+| Signature certificate | PingOne signing certificate downloaded from the external IdP's **Connection** tab |
+| User assignment | The Okta test user must be assigned to this application |
+
+`Unspecified` and disabled **Signed Requests** are verified POC interoperability workarounds. PingOne's outbound authentication request omitted `NameIDPolicy`; changing the former Okta `EmailAddress` format to `Unspecified` and disabling the signed-request requirement allowed login to complete. This is not yet approved as the production security design. PingOne and Okta must identify a supported production configuration if signed authentication requests and an explicit Name ID policy are required.
+
+The PingOne signing certificate is still needed for SAML logout even though Okta's signed authentication-request requirement is disabled. Authentication-request validation and SLO-message signing are separate concerns.
+
+#### PingOne policy and test path
+
+- The `OktaOnly` authentication policy must reference the enabled `Okta` external IdP and remain assigned to the Leader Tools PingOne application.
+- Leader Tools sends `acr_values=OktaOnly` when the user selects **Council Sign In**.
+- Start the test at `https://leadertools.local` and select **Council Sign In**. Do not start from the Okta dashboard tile; that IdP-initiated path lacks PingOne's transaction-specific `RelayState` and produces `MISSING_RELAY_STATE`.
+- After Leader Tools succeeds, open `https://gsregistration.local` in the same browser to verify that Registration silently reuses the PingOne session.
+- Login and cross-application SSO are verified. Full Okta browser-session termination after logout remains unresolved; follow the detailed System Log procedure in [`docs/ciam-broker-poc-findings.md`](./docs/ciam-broker-poc-findings.md#okta-logging-required-to-resolve-the-remaining-logout-issue).
+
+Before starting a live test, also confirm:
+
+1. The exact callback, silent-renew, and post-logout URLs for the origin being used are registered on the corresponding PingOne application.
+2. `OktaOnly`, `GigyaOnly`, and the conditional `Gigya-Federated` policy remain assigned/configured as recorded in the findings document.
+3. The Okta and Gigya external IdPs are enabled in PingOne.
+4. `/etc/hosts` and Caddy are configured for the complete live Gigya flow. PingOne currently sends Gigya authorization through `https://cdc-login.gsusa.local/api/auth/gigya-authorize`; that POC proxy is unavailable over a localhost-only setup. The mock flows and other locally registered callbacks can still use the documented localhost URLs.
+5. Docker is running if the test includes cross-application logout propagation.
+
+Never commit `.env.local`, client secrets, Worker secrets, test-user passwords, tokens, cookies, or decoded SAML messages.
 
 ## Running the apps
 
@@ -68,7 +185,7 @@ pnpm dev:mygs     # mock-mygs only
 | [GS Registration](./apps/gs-registration) | https://gsregistration.local | 3300 |
 | [Leader Tools (VTK)](./apps/gs-leadertools) | https://leadertools.local | 3000 |
 
-`https://` URLs above require the [Caddy HTTPS setup](#local-hostnames-over-real-https-optional) below; without Caddy running, use `http://<hostname>:<port>` instead (e.g. `http://girlscoutsshop.local:3100`).
+`https://` URLs above require the [Caddy HTTPS setup](#local-hostnames-over-real-https) below; without Caddy running, use `http://<hostname>:<port>` instead (e.g. `http://girlscoutsshop.local:3100`). The current live Gigya proxy is the exception and requires its HTTPS `.local` hostname.
 
 ### Test Credentials
 
@@ -112,9 +229,9 @@ The port is still required in the URL (e.g. `http://girlscoutsshop.local:3100`) 
 
 `gs-registration` is a separate case: it's a client-side OIDC flow (`react-oidc-context`), and plain-HTTP `.local` hostnames aren't a secure browsing context in Chrome, so `crypto.subtle` (needed for PKCE) is unavailable there. Always use `http://localhost:3300` for `gs-registration`'s real PingOne login, not `gsregistration.local:3300` — unless you're using the HTTPS-via-Caddy setup below, which sidesteps this entirely.
 
-### `.local` hostnames over real HTTPS (optional)
+### Local hostnames over real HTTPS
 
-The plain `/etc/hosts` mapping above still leaves you on `http://`. For real HTTPS on all four `.local` hostnames (no port, and no PKCE/secure-context restriction), this repo has its own [`Caddyfile`](./Caddyfile), started/stopped automatically by `start-dev.sh`/`stop-dev.sh` whenever the `caddy` CLI is installed (`brew install caddy`; run `caddy trust` once to add its local CA to your system trust store). If `caddy` isn't installed, both scripts skip it silently and everything still works over plain `http://localhost`.
+The plain `/etc/hosts` mapping above still leaves you on `http://`. For real HTTPS on all four `.local` hostnames (no port, and no PKCE/secure-context restriction), this repo has its own [`Caddyfile`](./Caddyfile), started/stopped automatically by `start-dev.sh`/`stop-dev.sh` whenever the `caddy` CLI is installed (`brew install caddy`; run `caddy trust` once to add its local CA to your system trust store). If Caddy is not installed, the scripts skip it and the applications can still run over plain `http://localhost`; however, the current live Gigya federation path will not complete because PingOne's configured POC authorization proxy uses `https://cdc-login.gsusa.local`.
 
 The four application origins (`girlscoutsshop.local`, `my-gs.local`, `gsregistration.local`, `leadertools.local`) are registered as extra `redirectUris`/`postLogoutRedirectUris` on their respective PingOne applications alongside the `localhost` ones, so either origin works for real PingOne login. `cdc-login.gsusa.local` is not another PingOne application. It hosts the browser-only POC authorization proxy described below and is already present in Gigya's SSO `validDomains` configuration.
 
