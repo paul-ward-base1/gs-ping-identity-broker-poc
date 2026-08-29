@@ -15,12 +15,10 @@ function withForwardedOrigin(request: NextRequest): NextRequest {
   return new NextRequest(url, request);
 }
 
-type RouteContext = { params: Promise<{ nextauth: string[] }> };
-
-export async function GET(request: NextRequest, ctx: RouteContext) {
-  return handlers.GET(withForwardedOrigin(request), ctx);
+export async function GET(request: NextRequest) {
+  return handlers.GET(withForwardedOrigin(request));
 }
 
-export async function POST(request: NextRequest, ctx: RouteContext) {
-  return handlers.POST(withForwardedOrigin(request), ctx);
+export async function POST(request: NextRequest) {
+  return handlers.POST(withForwardedOrigin(request));
 }

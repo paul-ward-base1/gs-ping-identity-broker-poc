@@ -231,6 +231,8 @@ Leader Tools and Registration first clear their local sessions and shared downst
 
 Leader Tools accepts an optional server-side `PINGONE_SAML_SLO_URL`. Registration accepts an optional build-time `VITE_PINGONE_SAML_SLO_URL`. Without an override, both derive the SAML endpoint from the HTTPS PingOne OIDC issuer or authority rather than hard-coding an environment-specific logout URL in the control flow.
 
+The shared behavior is covered by focused unit tests for both implementations: `okta-workforce` selects SAML SLO, `gigya-b2c` selects the existing OIDC path, and an unavailable SAML endpoint safely falls back to OIDC signoff.
+
 The implemented Okta path is therefore:
 
 ```text
@@ -283,6 +285,52 @@ After the direct PingOne SLO test, Okta's `/api/v1/sessions/me` endpoint continu
 
 The SAML transport, endpoint, issuer, request signature, correlation, and success response are no longer the unresolved fault boundary. Okta System Log evidence is still needed at the test timestamp, especially `user.authentication.slo` and `user.session.end`. If Okta records successful SLO but no session-end event, or records a session-end event while the same session ID remains active, Okta session handling requires vendor investigation.
 
+#### Okta logging required to resolve the remaining logout issue
+
+Okta's event catalog defines the two decisive events differently:
+
+- `user.authentication.slo` means that the user performed SLO from an application.
+- `user.session.end` means that the user logged out from Okta itself.
+
+The Okta administrator should perform a controlled test for each application logout entry point. Use a fresh Okta-backed sign-in immediately before each test and record the exact start and completion times in UTC. Also record whether the test originated from Leader Tools, Registration, or direct PingOne `/saml20/startslo`. Internally compare the Okta `/api/v1/sessions/me` session ID before and after logout, but do not place the full session ID in tickets, chat, screenshots, or this repository.
+
+In the Okta Admin Console, open **Reports → System Log**, select a bounded window beginning at least five minutes before the test and ending at least five minutes afterward, and run these event-type filters separately:
+
+```text
+eventType eq "user.authentication.slo"
+eventType eq "user.session.end"
+eventType eq "user.session.start"
+eventType eq "user.authentication.sso"
+```
+
+Start with the event-type filter and then narrow the results to the test user and the **GSUSA Broker (PingOne)** application. Searching separately is intentional: it makes the absence of `user.session.end` visible instead of hiding it inside a broad result set. The Okta System Log is near real time, but Okta notes that bounded results can rarely be delayed, so repeat the search with a wider time window before concluding that an event is absent.
+
+For every matching event, capture the following fields in a sanitized troubleshooting record:
+
+- `published`, `eventType`, and `displayMessage`;
+- `outcome.result` and `outcome.reason`;
+- `actor.id` and `actor.displayName`;
+- each `target` entry's `id`, `type`, and `displayName`, confirming both the user and application where present;
+- `transaction.id`, `transaction.type`, and `transaction.detail`;
+- `authenticationContext.externalSessionId`, if populated, using a redacted or hashed value when sharing it;
+- `client.ipAddress`, user agent, and device context, to distinguish another browser or device session; and
+- relevant `debugContext.debugData` fields such as a request ID, trace ID, request URI, protocol, or failure reason, after removing tokens, SAML payloads, and personal data.
+
+Correlate adjacent events using `transaction.id`, request/trace identifiers, the target user and application, and the bounded timestamp window. Do not share API tokens, cookies, raw `SAMLRequest` or `SAMLResponse` values, complete session IDs, or an unredacted HAR/System Log export.
+
+Interpret the evidence as follows:
+
+| Okta System Log result | Meaning and next action |
+|---|---|
+| No `user.authentication.slo` | First recheck the UTC window, user/app filters, administrator permissions, and delayed-event possibility. The captured browser exchange proves that Okta received the request and returned SAML `Success`, so a persistent absence becomes an Okta logging/support question rather than a PingOne transport failure. |
+| `user.authentication.slo` with `FAILURE` | Capture `outcome.reason`, transaction/request IDs, targets, and sanitized debug data. This would conflict with the returned SAML `Success` and should be escalated to Okta. |
+| `user.authentication.slo` with `SUCCESS`, but no `user.session.end` | This is the leading hypothesis: Okta ended the application SAML session but did not end the organization browser session. Ask Okta whether that is expected for this application-initiated SLO configuration and what setting or supported flow terminates the Okta session. |
+| Both SLO and `user.session.end` succeed, and no new `user.session.start` appears | `/api/v1/sessions/me` should no longer report the original session. If it does, compare the redacted external-session correlation and escalate the inconsistency to Okta. |
+| `user.session.end` is followed by `user.session.start` | The original session ended but was recreated. Inspect the new event's client, authentication context, policy/device behavior, other tabs, and FastPass or device SSO behavior. |
+| A later `user.authentication.sso` succeeds without a new session start | Compare its transaction and external-session context with the logout events to determine whether an existing Okta session survived application SLO. |
+
+The minimum evidence package for Okta support is therefore: exact UTC test window, originating application, sanitized before/after session comparison, the four event searches above, full sanitized details for every matching event, and the already verified browser sequence `startslo` → Okta `saml` → PingOne `slo` with a signed SAML `Success` response.
+
 The application orchestration now initiates PingOne SAML SLO while PingOne still has the upstream Okta participation context. Registration and Leader Tools use the same broker-owned behavior and do not call Okta directly or contain Okta certificates or credentials. Live browser verification from both logout buttons remains pending.
 
 ### 8. A parallel Okta OIDC provider is no longer required for the POC login path
@@ -309,6 +357,7 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 - Worker client credentials must never be stored in the repository, browser code, screenshots, or documentation.
 - A Worker secret was exposed during troubleshooting. The exposed value must remain revoked, and replacement secrets must never be pasted into chat, logs, screenshots, or repository files.
 - Downstream applications must not receive Gigya's upstream client secret or upstream ID token merely to implement logout.
+- Registration's verbose `oidc-client-ts` logging is disabled by default and can be enabled only in a local Vite development build with `VITE_OIDC_DEBUG=true`.
 - The Gigya authorization proxy and forced-login marker are explicitly POC-only behavior.
 - Any development-only role or claim bypass must remain disabled outside local development.
 
@@ -330,6 +379,7 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 | PingOne outbound Okta `LogoutRequest` | Verified | Direct `/saml20/startslo` testing produced an auto-posted, signed request with the correct destination and issuer plus `NameID` and `SessionIndex`. |
 | Okta upstream session termination | Pending investigation | Okta received the request and returned signed SAML `Success`, but the same Okta browser session remained active. Inspect the corresponding Okta System Log events. |
 | Provider-aware application logout orchestration | Implemented; live verification pending | Both apps revoke downstream state first, use SAML `startslo` for `okta-workforce`, and retain the existing Gigya signoff path. |
+| Provider-aware logout strategy tests | Verified | Both app implementations cover Okta SAML selection, Gigya OIDC selection, and missing-SLO fallback. |
 | Logout from either app clears Okta | Pending external resolution | Application SAML SLO initiation is implemented, but Okta still leaves its organization browser session active after returning SAML `Success`. |
 | Parallel Okta OIDC provider | Deferred | No longer required for the working POC login path. |
 | Okta dashboard tile | Not supported | IdP-initiated launch lacks PingOne RelayState. |
@@ -353,7 +403,7 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 
 ## Recommended next steps
 
-1. Have the Okta administrator inspect System Log events at the direct-test timestamp for `user.authentication.slo`, `user.session.end`, and any session-policy event accompanying the successful SAML exchange.
+1. Have the Okta administrator follow the bounded, four-event System Log procedure documented above and return a sanitized event package correlated by UTC time, user/app targets, transaction ID, and request/trace identifiers.
 2. Resolve the Okta session-termination behavior and repeat the direct test until `/api/v1/sessions/me` no longer reports the original session as active.
 3. Live-test Leader Tools logout: authenticate through Okta, select **Sign Out**, verify the `startslo` → Okta `saml` → PingOne `slo` sequence, and inspect the Okta session.
 4. Live-test Registration logout after Okta SSO: authenticate through Okta in Leader Tools, enter Registration silently, log out from Registration, and confirm the same SAML sequence and downstream revocation behavior.
@@ -377,3 +427,5 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 - [PingOne: SAML 2.0 single logout](https://docs.pingidentity.com/pingone/integrations/p1_saml_slo_externalidp.html)
 - [PingOne: Downloading metadata for SAML IdPs](https://docs.pingidentity.com/pingone/integrations/p1_download_metadata_for_saml_idps.html)
 - [Okta: Configure Single Logout in app integrations](https://help.okta.com/en-us/content/topics/apps/apps_single_logout.htm)
+- [Okta: System Log query guide](https://developer.okta.com/docs/reference/system-log-query/)
+- [Okta: System Log event types catalog](https://developer.okta.com/docs/reference/api/event-types/)

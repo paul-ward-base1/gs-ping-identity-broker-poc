@@ -2,10 +2,14 @@ import { WebStorageStateStore, type UserManagerSettings, Log } from 'oidc-client
 import type { AuthProviderProps } from 'react-oidc-context'
 import { getPingOneSamlSloUrl } from './pingone-saml-logout'
 
-// TEMP debug: verbose oidc-client-ts internals (metadata loads, signin
-// request construction, etc.) in the browser console.
-Log.setLogger(console)
-Log.setLevel(Log.DEBUG)
+// OIDC internals can include authorization details. Keep logging disabled by
+// default and allow it only through an explicit local-development opt-in.
+if (import.meta.env.DEV && import.meta.env.VITE_OIDC_DEBUG === 'true') {
+  Log.setLogger(console)
+  Log.setLevel(Log.DEBUG)
+} else {
+  Log.setLevel(Log.NONE)
+}
 
 // Matches the "gs-registration" SPA client registered in PingOne
 // (environment a6e455f2-da21-4c7d-b40f-8b288a64b010) — PKCE, no client

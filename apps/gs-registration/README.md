@@ -6,7 +6,7 @@ A React prototype for the Girl Scouts USA simplified member registration experie
 
 ## Overview
 
-This prototype was created to support UX design exploration and stakeholder review of the simplified registration process. All data is managed in client-side state only — there are no API integrations or backend services.
+This prototype was created to support UX design exploration and stakeholder review of the simplified registration process. Registration data remains client-side only. For the CIAM broker POC, the app also uses PingOne OIDC and mounts development/production session-status and logout-revocation endpoints; those endpoints support authentication testing and do not persist registration data.
 
 ### User Flows
 
@@ -105,7 +105,7 @@ npm install
 npm run dev
 ```
 
-The app runs at **http://localhost:5173** by default.
+The app runs at **http://localhost:3300** by default.
 
 ### Build for production
 
@@ -118,6 +118,22 @@ Output is written to `dist/`. Preview the production build locally with:
 ```bash
 npm run preview
 ```
+
+## PingOne broker POC
+
+The PingOne SPA authority and client ID are defined in `src/auth/oidc-config.ts`. The PingOne application must register the exact callback, silent-renew, and post-logout URLs for the origin being tested. Use `https://gsregistration.local` with the repository's Caddy setup, or `http://localhost:3300` without Caddy; a plain-HTTP `.local` origin does not provide the secure browser context required for OIDC PKCE.
+
+Optional local settings:
+
+```bash
+# Override PingOne's derived SAML SLO start URL when needed
+VITE_PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+
+# Local troubleshooting only; OIDC logging is disabled by default
+VITE_OIDC_DEBUG=true
+```
+
+An Okta-authenticated PingOne session can be reused silently by Registration. Logout is provider-aware: Okta-backed sessions initiate PingOne SAML SLO, while Gigya-backed sessions retain the existing PingOne OIDC/forced-reauthentication path. See the repository's [`docs/ciam-broker-poc-findings.md`](../../docs/ciam-broker-poc-findings.md) for verified behavior and unresolved upstream logout limitations.
 
 ---
 

@@ -6,7 +6,6 @@ import { Button, BackButton, ArrowRightIcon } from '../../components/Button'
 import { ProgressBar } from '../../components/ProgressBar'
 import { RadioCard } from '../../components/RadioCard'
 import { useRegistration } from '../../context/RegistrationContext'
-import troopLogo from '../../assets/troop-12345.png'
 import './TroopEnrolment.css'
 
 

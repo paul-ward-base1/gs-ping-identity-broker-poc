@@ -1,6 +1,6 @@
 # gs-ping-identity-broker-poc
 
-A proof-of-concept pnpm/Turborepo monorepo exploring CIAM (Customer Identity & Access Management) SSO via PingOne. Two mock relying-party apps (`mock-shop`, `mock-mygs`) share a broker-based OIDC login and session state through a common `@ciam-poc/auth` package, so single sign-on / single sign-out behavior can be demonstrated across apps. The repo also hosts a couple of unrelated Girl Scouts prototypes (`gs-registration`, `gs-leadertools`).
+A proof-of-concept pnpm/Turborepo monorepo exploring CIAM (Customer Identity & Access Management) SSO via PingOne. Two mock relying-party apps (`mock-shop`, `mock-mygs`) share a broker-based OIDC login and session state through a common `@ciam-poc/auth` package. The POC also integrates the Girl Scouts Registration and Leader Tools prototypes with PingOne to verify cross-application SSO, shared downstream logout, and provider-aware upstream logout through Gigya and Okta.
 
 ---
 
@@ -72,12 +72,12 @@ pnpm dev:mygs     # mock-mygs only
 
 ### Test Credentials
 
-| User | Email | Password | IdP |
+| User | Email | Credential source | IdP |
 |---|---|---|---|
-| CDC Consumer | `ryan.mchale+ciampoc@base1.com` | `Testing123!` | Gigya (SAP CDC) |
-| Okta Admin | `pward+counciluser@girlscouts.org` | `Testing123!` | Okta Workforce |
+| CDC Consumer | `ryan.mchale+ciampoc@base1.com` | Obtain through the secure POC handoff | Gigya (SAP CDC) |
+| Okta test user | `pward+counciluser@girlscouts.org` | Obtain through the secure POC handoff | Okta Workforce |
 
-> **Okta sign-in is currently blocked.** PingOne's outbound SAML `AuthnRequest` omits `NameIDPolicy`, so Okta authenticates the browser but never completes the handoff back to PingOne. See [`docs/ciam-broker-poc-findings.md`](./docs/ciam-broker-poc-findings.md) for the current status and proposed workaround. The Gigya credential above works end-to-end.
+> **Current status:** Gigya login, Okta login, and Okta-to-Registration SSO are verified. Okta application-initiated SAML logout reaches PingOne's **Signed Off** page with a signed `Success` response, but the tested Okta organization browser session remains active. See the [verified findings and Okta logging procedure](./docs/ciam-broker-poc-findings.md#okta-logging-required-to-resolve-the-remaining-logout-issue) before continuing logout diagnosis.
 
 ## Architecture
 
@@ -95,8 +95,8 @@ Upstream IdPs          Broker                    Downstream Apps
 |---|---|---|
 | [`mock-shop`](./apps/mock-shop) | Mock e-commerce relying-party app; signs in via the shared PingOne OIDC broker | `pnpm dev:shop` |
 | [`mock-mygs`](./apps/mock-mygs) | Mock "MyGS" member-portal relying-party app; shares SSO session with `mock-shop` | `pnpm dev:mygs` |
-| [`gs-registration`](./apps/gs-registration) | Standalone React/Vite prototype for the simplified member registration flow (client-side only, no backend) | `cd apps/gs-registration && pnpm dev` |
-| [`gs-leadertools`](./apps/gs-leadertools) | Unrelated Next.js app for the Girl Scouts Virtual Trail Kit (badges/activities via AEM). Excluded from this pnpm workspace — see its own README | `cd apps/gs-leadertools && yarn install && ENV=dev yarn dev` |
+| [`gs-registration`](./apps/gs-registration) | React/Vite simplified-registration prototype integrated with PingOne OIDC, silent cross-application SSO, shared session-status checks, and provider-aware logout | `cd apps/gs-registration && pnpm dev` |
+| [`gs-leadertools`](./apps/gs-leadertools) | Next.js Girl Scouts Virtual Trail Kit integrated with PingOne OIDC, Okta-only workforce authentication policy selection, shared revocation, and provider-aware logout. Excluded from this pnpm workspace — see its own README | `cd apps/gs-leadertools && yarn install && ENV=dev yarn dev` |
 
 ### Local hostnames
 
@@ -140,9 +140,14 @@ PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
 
 # gs-registration build/dev environment
 VITE_PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+
+# Optional local troubleshooting only; ignored by production builds
+VITE_OIDC_DEBUG=true
 ```
 
 Direct SAML testing verifies that PingOne sends Okta a signed `LogoutRequest` with the expected issuer, `NameID`, and `SessionIndex`; Okta returns a signed `Success` `LogoutResponse`; and PingOne reaches **Signed Off**. Okta's organization browser session nevertheless remains active in the tested tenant. The application orchestration is therefore implemented, but an Okta administrator must still determine why successful application-initiated SLO does not produce the expected Okta session termination.
+
+Verbose `oidc-client-ts` browser logging is disabled by default because it can expose authorization details in developer tools. It can be enabled only in a Vite development build with `VITE_OIDC_DEBUG=true`. Unit coverage verifies that both applications select SAML SLO for `okta-workforce`, retain OIDC signoff for `gigya-b2c`, and fall back to OIDC signoff when no safe SAML endpoint is available.
 
 The POC's PingOne discovery document advertises RP-initiated logout and session checking, but it does not advertise OIDC backchannel logout support. A cloud broker also cannot push to a localhost-only endpoint; testing a real push requires a public HTTPS callback and a broker/application type that supports OIDC Back-Channel Logout.
 

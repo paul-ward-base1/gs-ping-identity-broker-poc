@@ -4,8 +4,8 @@ import { auth } from "@/auth";
 import { getRequestOrigin } from "@/lib/requestOrigin";
 import { revokeBrokerSession } from "@/lib/brokerSessionRevocation";
 import {
+  getBrokerLogoutStrategy,
   getPingOneSamlSloUrl,
-  OKTA_UPSTREAM_IDP,
 } from "@/lib/pingOneSamlLogout";
 
 const SESSION_COOKIE_NAMES = [
@@ -48,7 +48,11 @@ export async function GET(request: NextRequest) {
   let logoutUrl = appUrl;
   if (issuer && brokerClaims?.brokerPlatform === "pingone") {
     const samlSloUrl = getPingOneSamlSloUrl(issuer);
-    if (brokerClaims.upstreamIdp === OKTA_UPSTREAM_IDP && samlSloUrl) {
+    const strategy = getBrokerLogoutStrategy(
+      brokerClaims.upstreamIdp,
+      samlSloUrl,
+    );
+    if (strategy === "saml" && samlSloUrl) {
       // Initiate SAML SLO before OIDC signoff destroys the PingOne browser
       // session and its record of the participating Okta SAML IdP.
       logoutUrl = samlSloUrl;

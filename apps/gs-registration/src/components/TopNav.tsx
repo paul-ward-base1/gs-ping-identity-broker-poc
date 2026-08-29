@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
 import { pingOneSamlSloUrl } from '../auth/oidc-config'
-import { OKTA_UPSTREAM_IDP } from '../auth/pingone-saml-logout'
+import { getBrokerLogoutStrategy } from '../auth/pingone-saml-logout'
 import './TopNav.css'
 import gsLogo from '../assets/gs-logo.png'
 
@@ -80,6 +80,7 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
             <button className="login-btn" onClick={async () => {
               sessionStorage.setItem("sso-checked", Date.now().toString());
               const upstreamIdp = auth.user?.profile.identity_provider as string | undefined;
+              const logoutStrategy = getBrokerLogoutStrategy(upstreamIdp, pingOneSamlSloUrl)
               try {
                 if (auth.user?.id_token) {
                   await fetch('/api/auth/revoke-session', {
@@ -89,7 +90,7 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
                   })
                 }
               } finally {
-                if (upstreamIdp === OKTA_UPSTREAM_IDP && pingOneSamlSloUrl) {
+                if (logoutStrategy === 'saml' && pingOneSamlSloUrl) {
                   // Remove only Registration's local OIDC state. The PingOne
                   // browser session must remain available until startslo uses
                   // its record of the participating Okta SAML IdP.

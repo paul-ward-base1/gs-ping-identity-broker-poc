@@ -70,6 +70,25 @@ ENV=uat yarn dev    # loads .env.uat → AEM UAT
 | `AEM_MODE`                       | Set to `author` to enable UE instrumentation and cookie-based AEM auth                                          |
 | `UE_SERVICE_URL`                 | Universal Editor service URL (local proxy or `https://universal-editor-service.adobe.io`)                       |
 
+### PingOne CIAM broker POC
+
+For broker-backed sign-in, place the local-only authentication values in `.env.local`; do not commit client secrets or test passwords:
+
+```bash
+AUTH_ISSUER=https://auth.pingone.ca/<environment-id>/as
+AUTH_CLIENT_ID=<leader-tools-client-id>
+AUTH_CLIENT_SECRET=<leader-tools-client-secret>
+AUTH_SECRET=<authjs-session-secret>
+REDIS_URL=redis://localhost:6379
+
+# Optional; otherwise derived safely from AUTH_ISSUER
+PINGONE_SAML_SLO_URL=https://auth.pingone.ca/<environment-id>/saml20/startslo
+```
+
+Start authentication from Leader Tools with **Council Sign In**. The Okta dashboard tile is not a supported entry point because that IdP-initiated flow lacks PingOne's transaction-specific `RelayState`. The application uses `acr_values=OktaOnly`, and its provider-aware logout initiates PingOne SAML SLO for an Okta-backed session.
+
+Okta login and Okta-to-Registration SSO are verified. The remaining upstream issue is that Okta returns a signed SAML `Success` logout response while the tested Okta organization browser session remains active. See the repository's [`docs/ciam-broker-poc-findings.md`](../../docs/ciam-broker-poc-findings.md), including the Okta System Log evidence procedure, before continuing diagnosis.
+
 ## Image Proxy
 
 AEM DAM images are served through a Next.js Route Handler at `/img/[...path]` (`src/app/img/[...path]/route.ts`). This avoids exposing `/_next/image` as an SSRF vector and gives full control over TLS behavior per environment.

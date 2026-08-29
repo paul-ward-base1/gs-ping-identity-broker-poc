@@ -488,52 +488,6 @@ export function Payment() {
   )
 }
 
-const gradeToLevel = (grade: string): string => {
-  if (!grade) return ''
-  if (['Kindergarten', '1st Grade'].includes(grade)) return 'DAISY'
-  if (['2nd Grade', '3rd Grade'].includes(grade))     return 'BROWNIE'
-  if (['4th Grade', '5th Grade'].includes(grade))     return 'JUNIOR'
-  if (['6th Grade', '7th Grade', '8th Grade'].includes(grade)) return 'CADETTE'
-  if (['9th Grade', '10th Grade'].includes(grade))    return 'SENIOR'
-  if (['11th Grade', '12th Grade'].includes(grade))   return 'AMBASSADOR'
-  return grade.toUpperCase()
-}
-
-const gradeToRange = (grade: string): string => {
-  if (!grade) return ''
-  if (grade === 'Kindergarten') return 'GRADE K'
-  if (grade === '1st Grade') return 'GRADES K–1'
-  if (grade === '2nd Grade') return 'GRADES 2–3'
-  if (grade === '3rd Grade') return 'GRADE 3'
-  if (['4th Grade', '5th Grade'].includes(grade)) return 'GRADES 4–5'
-  if (['6th Grade', '7th Grade', '8th Grade'].includes(grade)) return 'GRADES 6–8'
-  if (['9th Grade', '10th Grade'].includes(grade)) return 'GRADES 9–10'
-  if (['11th Grade', '12th Grade'].includes(grade)) return 'GRADES 11–12'
-  return grade.toUpperCase()
-}
-
-function CouncilBadge({ councilName }: { councilName: string }) {
-  const name = councilName || 'Girl Scouts Council'
-  return (
-    <div className="pay-council-badge">
-      <CloverIcon />
-      <span className="pay-council-name">{name.toLowerCase()}</span>
-    </div>
-  )
-}
-
-function CloverIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-      <circle cx="7" cy="4"  r="3" fill="var(--color-primary)" opacity="0.9"/>
-      <circle cx="10" cy="7" r="3" fill="var(--color-primary)" opacity="0.9"/>
-      <circle cx="4"  cy="7" r="3" fill="var(--color-primary)" opacity="0.9"/>
-      <circle cx="7" cy="10" r="3" fill="var(--color-primary)" opacity="0.9"/>
-      <rect x="6.2" y="4" width="1.6" height="6" rx="0.8" fill="var(--color-primary)"/>
-    </svg>
-  )
-}
-
 function PayCouncilBadge() {
   return (
     <div className="pay-council-badge">

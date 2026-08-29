@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom'
 import { TopNav } from '../components/TopNav'
 import { Footer } from '../components/Footer'
 import { useRegistration } from '../context/RegistrationContext'
-import appleWalletBadge from '../assets/apple-wallet-badge.png'
 import './Confirmation.css'
 
 const referenceNumber = Math.floor(10000000 + Math.random() * 90000000).toString()

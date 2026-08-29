@@ -1,12 +1,9 @@
-import { useNavigate } from 'react-router-dom'
 import { TopNav } from '../../components/TopNav'
 import { Footer } from '../../components/Footer'
 import '../Confirmation.css'
 import './TroopContactConfirmation.css'
 
 export function TroopContactConfirmation() {
-  const navigate = useNavigate()
-
   return (
     <div className="screen">
       <TopNav />

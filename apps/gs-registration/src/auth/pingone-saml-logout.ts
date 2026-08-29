@@ -1,4 +1,12 @@
 export const OKTA_UPSTREAM_IDP = 'okta-workforce'
+export type BrokerLogoutStrategy = 'saml' | 'oidc'
+
+export function getBrokerLogoutStrategy(
+  upstreamIdp: string | undefined,
+  samlSloUrl: string | undefined,
+): BrokerLogoutStrategy {
+  return upstreamIdp === OKTA_UPSTREAM_IDP && samlSloUrl ? 'saml' : 'oidc'
+}
 
 function asHttpsUrl(value: string | undefined): URL | undefined {
   if (!value) return undefined
