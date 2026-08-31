@@ -62,6 +62,22 @@ export async function recordBrokerSessionUpstream(reference: {
   }
 }
 
+export async function lookupBrokerSessionUpstream(reference: {
+  issuer?: string;
+  sid?: string;
+}): Promise<string | undefined> {
+  if (!reference.issuer || !reference.sid) return undefined;
+
+  try {
+    return (
+      (await getRedis().get(upstreamKey(reference.issuer, reference.sid))) ??
+      undefined
+    );
+  } catch {
+    return undefined;
+  }
+}
+
 export async function revokeBrokerSession(
   reference: BrokerSessionReference,
   revokedAt = Math.floor(Date.now() / 1000)

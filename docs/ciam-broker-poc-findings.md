@@ -59,6 +59,8 @@ Leader Tools keeps its explicit choices:
 - **Sign In** selects `GigyaOnly` with `acr_values=GigyaOnly`.
 - **Council Sign In** selects `OktaOnly` with `acr_values=OktaOnly`.
 
+**Design decision (August 31, 2026):** these buttons intentionally remain strict. A Gigya-backed PingOne session does not satisfy **Council Sign In** — clicking it always requires Okta authentication, preserving the guarantee that a council-labeled session is Okta-verified. Cross-application convenience is provided separately: Leader Tools' `SilentAuth` component silently reuses any existing PingOne session on page load (without `acr_values`), so a user already signed in through Registration enters Leader Tools automatically at member level without clicking anything.
+
 Registration exposes only its Gigya-oriented **Sign in** action. It does not send an `acr_values` override, allowing PingOne to reuse an existing session regardless of whether Okta or Gigya originally authenticated it. If PingOne needs an interactive authentication, the first/default assigned policy is `Gigya-Federated`.
 
 ### 2. `Gigya-Federated` required a Management API repair

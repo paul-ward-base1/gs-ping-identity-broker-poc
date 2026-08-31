@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/auth";
 import { getRequestOrigin } from "@/lib/requestOrigin";
-import { revokeBrokerSession } from "@/lib/brokerSessionRevocation";
+import {
+  lookupBrokerSessionUpstream,
+  revokeBrokerSession,
+} from "@/lib/brokerSessionRevocation";
 import {
   getBrokerLogoutStrategy,
   getPingOneSamlSloUrl,
@@ -50,8 +53,15 @@ export async function GET(request: NextRequest) {
   if (issuer && brokerClaims?.brokerPlatform === "pingone") {
     const samlSloUrl = getPingOneSamlSloUrl(issuer);
     const acr = brokerClaims.rawIdToken?.["acr"] as string | undefined;
+    // A silently acquired session (SilentAuth) carries neither the OktaOnly
+    // acr nor a usable identity_provider claim; the shared upstream record
+    // written at interactive login is its only link to Okta.
+    const recordedUpstream = await lookupBrokerSessionUpstream({
+      issuer: brokerClaims.brokerIssuer,
+      sid: brokerClaims.brokerSessionId,
+    });
     const strategy = getBrokerLogoutStrategy(
-      brokerClaims.upstreamIdp,
+      recordedUpstream ?? brokerClaims.upstreamIdp,
       samlSloUrl,
       acr,
     );
