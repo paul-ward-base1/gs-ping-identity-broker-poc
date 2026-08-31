@@ -22,6 +22,10 @@ function identifierKey(kind, value) {
   return `bcl:revoked:${kind}:${encodeURIComponent(issuer)}:${encodeURIComponent(value)}`
 }
 
+function upstreamKey(sid) {
+  return `broker:upstream:${encodeURIComponent(issuer)}:${encodeURIComponent(sid)}`
+}
+
 async function getVerificationKey() {
   if (!verificationKeyPromise) {
     verificationKeyPromise = fetch(`${issuer.replace(/\/$/, '')}/.well-known/openid-configuration`)
@@ -118,6 +122,26 @@ export function createSessionRevocationRouter() {
     } catch (error) {
       console.warn('[logout] Rejected ID token', error)
       res.status(400).json({ error: 'invalid id_token' })
+    }
+  })
+
+  // Reports which upstream IdP authenticated this token's PingOne browser
+  // session, as recorded by the application that performed the interactive
+  // login. Lets a silently SSO'd application choose SAML SLO for a session
+  // whose own token carries no Okta acr or identity_provider signal.
+  router.post('/api/auth/session-upstream', express.json(), async (req, res) => {
+    try {
+      const idToken = req.body.id_token
+      if (typeof idToken !== 'string') {
+        res.status(400).json({ error: 'missing id_token' })
+        return
+      }
+      const { payload } = await verifyToken(idToken)
+      const upstream =
+        typeof payload.sid === 'string' ? await redis.get(upstreamKey(payload.sid)) : null
+      res.json({ upstream: upstream ?? null })
+    } catch {
+      res.status(401).json({ error: 'invalid id_token' })
     }
   })
 

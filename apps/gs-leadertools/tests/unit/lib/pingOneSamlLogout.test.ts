@@ -61,4 +61,20 @@ describe.each([
   it("falls back to OIDC signoff when the SAML endpoint is unavailable", () => {
     expect(getStrategy("okta-workforce", undefined)).toBe("oidc");
   });
+
+  it("selects SAML SLO from the OktaOnly acr when identity_provider is absent", () => {
+    expect(
+      getStrategy("local", "https://auth.pingone.ca/environment/saml20/startslo", "OktaOnly"),
+    ).toBe("saml");
+  });
+
+  it("retains OIDC signoff for a non-Okta acr", () => {
+    expect(
+      getStrategy("local", "https://auth.pingone.ca/environment/saml20/startslo", "Gigya-Federated"),
+    ).toBe("oidc");
+  });
+
+  it("falls back to OIDC signoff for an OktaOnly acr without a SAML endpoint", () => {
+    expect(getStrategy("local", undefined, "OktaOnly")).toBe("oidc");
+  });
 });

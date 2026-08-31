@@ -1,11 +1,20 @@
 export const OKTA_UPSTREAM_IDP = 'okta-workforce'
+// PingOne authentication-policy name requested via acr_values for Okta logins.
+// The identity_provider claim reflects the IdP authoritative for the user
+// record, so it reads "local" for accounts linked to a pre-existing PingOne
+// user; the acr claim identifies the session's authentication policy instead.
+export const OKTA_ACR_POLICY = 'OktaOnly'
 export type BrokerLogoutStrategy = 'saml' | 'oidc'
 
 export function getBrokerLogoutStrategy(
   upstreamIdp: string | undefined,
   samlSloUrl: string | undefined,
+  acr?: string,
 ): BrokerLogoutStrategy {
-  return upstreamIdp === OKTA_UPSTREAM_IDP && samlSloUrl ? 'saml' : 'oidc'
+  if (!samlSloUrl) return 'oidc'
+  return upstreamIdp === OKTA_UPSTREAM_IDP || acr === OKTA_ACR_POLICY
+    ? 'saml'
+    : 'oidc'
 }
 
 function asHttpsUrl(value: string | undefined): URL | undefined {

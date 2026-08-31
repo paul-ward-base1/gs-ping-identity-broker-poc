@@ -28,6 +28,7 @@ export const AuthControls = () => {
       roles?: string[];
       upstreamIdp?: string;
       upstreamClaims?: { councilCode?: string };
+      rawIdToken?: { acr?: string };
     };
   })?.brokerClaims;
 
@@ -36,7 +37,10 @@ export const AuthControls = () => {
   const roles = brokerClaims?.roles ?? [];
   const isAdmin = roles.includes('admin');
   const idp = brokerClaims?.upstreamIdp;
-  const idpLabel = idp === 'gigya-b2c' ? 'CDC' : idp === 'okta-workforce' ? 'Okta' : idp ?? '';
+  // Linked accounts report identity_provider as "local"; the OktaOnly acr
+  // identifies the session's authentication policy (see pingOneSamlLogout).
+  const isOktaSession = idp === 'okta-workforce' || brokerClaims?.rawIdToken?.acr === 'OktaOnly';
+  const idpLabel = idp === 'gigya-b2c' ? 'CDC' : isOktaSession ? 'Okta' : idp ?? '';
 
   return (
     <div className="gs-auth-controls">

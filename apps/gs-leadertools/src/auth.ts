@@ -3,7 +3,9 @@ import type { NextAuthConfig } from "next-auth";
 import {
   getSessionMaxAgeSeconds,
   isSessionRevoked,
+  recordBrokerSessionUpstream,
 } from "./lib/brokerSessionRevocation";
+import { OKTA_ACR_POLICY, OKTA_UPSTREAM_IDP } from "./lib/pingOneSamlLogout";
 
 type UserRole = "member" | "admin";
 
@@ -96,6 +98,18 @@ const config: NextAuthConfig = {
         token.brokerSessionIssuedAt = idTokenClaims["iat"] as number | undefined;
         token.sub = idTokenClaims["sub"] as string;
         token.sid = idTokenClaims["sid"] as string;
+
+        const acr = idTokenClaims["acr"] as string | undefined;
+        if (
+          token.sid &&
+          (acr === OKTA_ACR_POLICY || token.upstreamIdp === OKTA_UPSTREAM_IDP)
+        ) {
+          await recordBrokerSessionUpstream({
+            issuer: token.brokerIssuer as string,
+            sid: token.sid as string,
+            upstream: OKTA_UPSTREAM_IDP,
+          });
+        }
 
         if (account.access_token) {
           try {

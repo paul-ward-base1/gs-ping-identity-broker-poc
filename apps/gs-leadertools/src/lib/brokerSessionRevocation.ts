@@ -35,6 +35,33 @@ function identifierKey(kind: "sid" | "sub", issuer: string, value: string): stri
   return `bcl:revoked:${kind}:${encodeURIComponent(issuer)}:${encodeURIComponent(value)}`;
 }
 
+function upstreamKey(issuer: string, sid: string): string {
+  return `broker:upstream:${encodeURIComponent(issuer)}:${encodeURIComponent(sid)}`;
+}
+
+// Records which upstream IdP authenticated a PingOne browser session so other
+// participating applications can select the matching broker logout strategy.
+// A silently SSO'd application receives a token without the OktaOnly acr or a
+// usable identity_provider claim; the shared sid is its only link to Okta.
+export async function recordBrokerSessionUpstream(reference: {
+  issuer: string;
+  sid?: string;
+  upstream: string;
+}): Promise<void> {
+  if (!reference.issuer || !reference.sid) return;
+
+  try {
+    await getRedis().set(
+      upstreamKey(reference.issuer, reference.sid),
+      reference.upstream,
+      "EX",
+      getSessionMaxAgeSeconds()
+    );
+  } catch {
+    console.warn("[auth] Redis unavailable — session upstream not persisted");
+  }
+}
+
 export async function revokeBrokerSession(
   reference: BrokerSessionReference,
   revokedAt = Math.floor(Date.now() / 1000)

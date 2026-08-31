@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       brokerIssuer?: string;
       brokerSessionId?: string;
       brokerSessionIssuedAt?: number;
+      rawIdToken?: Record<string, unknown>;
     };
     idTokenJwt?: string;
   };
@@ -48,16 +49,23 @@ export async function GET(request: NextRequest) {
   let logoutUrl = appUrl;
   if (issuer && brokerClaims?.brokerPlatform === "pingone") {
     const samlSloUrl = getPingOneSamlSloUrl(issuer);
+    const acr = brokerClaims.rawIdToken?.["acr"] as string | undefined;
     const strategy = getBrokerLogoutStrategy(
       brokerClaims.upstreamIdp,
       samlSloUrl,
+      acr,
     );
     if (strategy === "saml" && samlSloUrl) {
       // Initiate SAML SLO before OIDC signoff destroys the PingOne browser
-      // session and its record of the participating Okta SAML IdP.
+      // session and its record of the participating Okta SAML IdP. The
+      // browser finishes on PingOne's Signed Off page: startslo recognizes
+      // post_logout_redirect_uri but rejects registered URIs with
+      // INVALID_POST_LOGOUT_REDIRECT_URI, with or without id_token_hint
+      // (tested August 31, 2026), so no redirect back to the app is passed.
       logoutUrl = samlSloUrl;
       console.warn("[logout] Redirecting to PingOne SAML SLO", {
         upstreamIdp: brokerClaims.upstreamIdp,
+        acr,
       });
     } else {
       // Keep the verified Gigya POC behavior. PingOne OIDC signoff is followed

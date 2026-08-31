@@ -73,14 +73,37 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
                 const realmAccess = auth.user?.profile.realm_access as { roles?: string[] } | undefined;
                 const roles = realmAccess?.roles?.filter((r: string) => r === 'admin' || r === 'member') ?? [];
                 const idp = auth.user?.profile.identity_provider as string | undefined;
-                const idpLabel = idp === 'gigya-b2c' ? 'CDC' : idp === 'okta-workforce' ? 'Okta' : idp ?? '';
+                // Linked accounts report identity_provider as "local"; the OktaOnly
+                // acr identifies the session's authentication policy.
+                const isOktaSession = idp === 'okta-workforce' || (auth.user?.profile.acr as string | undefined) === 'OktaOnly';
+                const idpLabel = idp === 'gigya-b2c' ? 'CDC' : isOktaSession ? 'Okta' : idp ?? '';
                 return `${roles.join(', ')}${idpLabel ? ` · ${idpLabel}` : ''}`;
               })()}
             </span>
             <button className="login-btn" onClick={async () => {
               sessionStorage.setItem("sso-checked", Date.now().toString());
               const upstreamIdp = auth.user?.profile.identity_provider as string | undefined;
-              const logoutStrategy = getBrokerLogoutStrategy(upstreamIdp, pingOneSamlSloUrl)
+              const acr = auth.user?.profile.acr as string | undefined;
+              // A silently SSO'd session carries no Okta acr or identity_provider
+              // signal of its own; ask the shared broker store which upstream IdP
+              // authenticated this PingOne session (recorded at interactive login).
+              let brokerUpstream: string | undefined
+              if (auth.user?.id_token) {
+                try {
+                  const res = await fetch('/api/auth/session-upstream', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id_token: auth.user.id_token }),
+                  })
+                  if (res.ok) {
+                    const body = (await res.json()) as { upstream?: string | null }
+                    brokerUpstream = body.upstream ?? undefined
+                  }
+                } catch {
+                  // Fall back to the token's own signals below.
+                }
+              }
+              const logoutStrategy = getBrokerLogoutStrategy(brokerUpstream ?? upstreamIdp, pingOneSamlSloUrl, acr)
               try {
                 if (auth.user?.id_token) {
                   await fetch('/api/auth/revoke-session', {
@@ -97,6 +120,11 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
                   try {
                     await auth.removeUser()
                   } finally {
+                    // The browser finishes on PingOne's Signed Off page:
+                    // startslo recognizes post_logout_redirect_uri but rejects
+                    // registered URIs with INVALID_POST_LOGOUT_REDIRECT_URI,
+                    // with or without id_token_hint (tested August 31, 2026),
+                    // so no redirect back to Registration is passed.
                     window.location.assign(pingOneSamlSloUrl)
                   }
                 } else {
