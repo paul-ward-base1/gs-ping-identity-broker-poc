@@ -59,7 +59,7 @@ Leader Tools keeps its explicit choices:
 - **Sign In** selects `GigyaOnly` with `acr_values=GigyaOnly`.
 - **Council Sign In** selects `OktaOnly` with `acr_values=OktaOnly`.
 
-**Design decision (August 31, 2026):** these buttons intentionally remain strict. A Gigya-backed PingOne session does not satisfy **Council Sign In** — clicking it always requires Okta authentication, preserving the guarantee that a council-labeled session is Okta-verified. Cross-application convenience is provided separately: Leader Tools' `SilentAuth` component silently reuses any existing PingOne session on page load (without `acr_values`), so a user already signed in through Registration enters Leader Tools automatically at member level without clicking anything.
+**Design decision (August 31, 2026):** these buttons intentionally remain strict. A Gigya-backed PingOne session does not satisfy **Council Sign In** — clicking it always requires Okta authentication, preserving the guarantee that a council-labeled session is Okta-verified. Cross-application convenience is provided separately: Leader Tools' `SilentAuth` component silently reuses any existing PingOne session on page load (without `acr_values`), so a user already signed in through Registration enters Leader Tools automatically at member level without clicking anything. Live verification of this silent Gigya-to-Leader-Tools pickup is still pending; the equivalent silent flow has been verified in the other direction (Okta finding 4).
 
 Registration exposes only its Gigya-oriented **Sign in** action. It does not send an `acr_values` override, allowing PingOne to reuse an existing session regardless of whether Okta or Gigya originally authenticated it. If PingOne needs an interactive authentication, the first/default assigned policy is `Gigya-Federated`.
 
@@ -252,7 +252,7 @@ Leader Tools and Registration first clear their local sessions and shared downst
 
 - the `identity_provider` claim equals `okta-workforce`;
 - the `acr` claim equals `OktaOnly`, the authentication policy requested by Council Sign In; or
-- the shared Redis record `broker:upstream:{issuer}:{sid}` equals `okta-workforce`. The application performing the interactive Okta login (Leader Tools) records this against the PingOne session ID, and Registration's backend exposes `/api/auth/session-upstream` so its logout can resolve the shared `sid` from its own verified ID token.
+- the shared Redis record `broker:upstream:{issuer}:{sid}` equals `okta-workforce`. The application performing the interactive Okta login (Leader Tools) records this against the PingOne session ID; Registration's backend exposes `/api/auth/session-upstream` so its logout can resolve the shared `sid` from its own verified ID token, and Leader Tools' logout route consults the same record server-side, covering sessions Leader Tools acquired silently through `SilentAuth`.
 
 Sessions without any Okta signal retain the existing PingOne OIDC signoff followed by the POC-only Gigya forced-reauthentication marker, and an unavailable or invalid SAML SLO URL safely falls back to the existing OIDC signoff path.
 
@@ -357,7 +357,7 @@ Interpret the evidence as follows:
 |---|---|
 | No `user.authentication.slo` | First recheck the UTC window, user/app filters, administrator permissions, and delayed-event possibility. The captured browser exchange proves that Okta received the request and returned SAML `Success`, so a persistent absence becomes an Okta logging/support question rather than a PingOne transport failure. |
 | `user.authentication.slo` with `FAILURE` | Capture `outcome.reason`, transaction/request IDs, targets, and sanitized debug data. This would conflict with the returned SAML `Success` and should be escalated to Okta. |
-| `user.authentication.slo` with `SUCCESS`, but no `user.session.end` | This is the leading hypothesis: Okta ended the application SAML session but did not end the organization browser session. Ask Okta whether that is expected for this application-initiated SLO configuration and what setting or supported flow terminates the Okta session. |
+| `user.authentication.slo` with `SUCCESS`, but no `user.session.end` | This was the resolved failure mode: it indicates the **Front-channel Single Logout** Early Access feature is disabled in that Okta org (see the resolution above). Verify the feature at **Settings → Features** before escalating. |
 | Both SLO and `user.session.end` succeed, and no new `user.session.start` appears | `/api/v1/sessions/me` should no longer report the original session. If it does, compare the redacted external-session correlation and escalate the inconsistency to Okta. |
 | `user.session.end` is followed by `user.session.start` | The original session ended but was recreated. Inspect the new event's client, authentication context, policy/device behavior, other tabs, and FastPass or device SSO behavior. |
 | A later `user.authentication.sso` succeeds without a new session start | Compare its transaction and external-session context with the logout events to determine whether an existing Okta session survived application SLO. |
@@ -381,7 +381,7 @@ A parallel Okta OIDC provider was considered while SAML authentication was block
 - PingOne discovery in the tested tenant does not advertise OIDC back-channel logout support.
 - The Gigya forced-login marker and authorization proxy make the next interactive Gigya request use `prompt=login`; they do not terminate the upstream Gigya session.
 - Okta-backed application logout initiates PingOne SAML SLO before OIDC signoff and is verified to terminate the Okta browser session; Gigya-backed logout retains the existing OIDC and forced-reauthentication path.
-- Leader Tools records the session's upstream IdP against the shared PingOne `sid` in Redis at interactive Okta login, and Registration's logout resolves it through its backend, so logging out from either application invokes the same broker-owned SAML SLO flow. This cross-application requirement is now verified.
+- Leader Tools records the session's upstream IdP against the shared PingOne `sid` in Redis at interactive Okta login; Registration's logout resolves it through its backend, and Leader Tools' logout route consults the same record (covering silently acquired sessions), so logging out from either application invokes the same broker-owned SAML SLO flow. The cross-application requirement is verified for the interactive paths; the silent-session logout path is covered by the same code but has not been separately live-tested.
 
 Redis-based downstream revocation and upstream identity-provider logout are separate concerns. Redis can invalidate sessions in the POC applications, but it cannot terminate the browser's Gigya or Okta session.
 
@@ -407,6 +407,7 @@ Redis-based downstream revocation and upstream identity-provider logout are sepa
 | PingOne to Okta SAML authentication | Verified | Leader Tools Council Sign In completes through PingOne and Okta. |
 | Okta SAML interoperability workaround | Verified for POC | Uses Name ID format `Unspecified` with Okta Signed Requests disabled. |
 | Okta-to-Registration SSO | Verified | Registration silently reused the PingOne session created by Leader Tools through Okta. |
+| Registration-to-Leader Tools silent SSO | Implemented; live verification pending | `SilentAuth` performs a `prompt=none` sign-in on page load with no `acr_values`; the Gigya-backed pickup has not yet been observed end to end. |
 | Conditional `Gigya-Federated` policy | Verified | API repair selected provider `3e182f33-996f-47f8-bae4-e2c7914c95d8` and stored an eight-hour last-sign-on condition. |
 | Okta SAML SLO configuration | Verified | Okta publishes its IdP SLO endpoint; PingOne stores that endpoint with `HTTP_POST`, a two-hour SLO window, and the Okta verification certificate. |
 | PingOne outbound Okta `LogoutRequest` | Verified | Direct `/saml20/startslo` testing produced an auto-posted, signed request with the correct destination and issuer plus `NameID` and `SessionIndex`. |
