@@ -137,7 +137,7 @@ The PingOne signing certificate is still needed for SAML logout even though Okta
 
 Before starting a live test, also confirm:
 
-1. The exact callback, silent-renew, and post-logout URLs for the origin being used are registered on the corresponding PingOne application.
+1. The exact callback, silent-renew, popup-callback, and post-logout URLs for the origin being used are registered on the corresponding PingOne application. Registration's popup sign-in (`auth.signinPopup()`) redirects to `/popup-callback.html` rather than `/callback`, so that URL needs its own redirect URI entry (e.g. `https://gsregistration.local/popup-callback.html`) alongside the existing ones. Leader Tools' popup sign-in reuses the existing `/api/auth/callback/broker` redirect URI — no new PingOne registration needed there.
 2. `OktaOnly`, `GigyaOnly`, and the conditional `Gigya-Federated` policy remain assigned/configured as recorded in the findings document.
 3. The Okta and Gigya external IdPs are enabled in PingOne.
 4. `/etc/hosts` and Caddy are configured for the complete live Gigya flow. PingOne currently sends Gigya authorization through `https://cdc-login.gsusa.local/api/auth/gigya-authorize`; that POC proxy is unavailable over a localhost-only setup. The mock flows and other locally registered callbacks can still use the documented localhost URLs.

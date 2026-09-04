@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useMemo, ReactNode } from 'react'
 
 export interface RegistrationData {
   // Girl Scout
@@ -180,14 +180,17 @@ function computeMeta(data: RegistrationData): RegistrationMeta {
 export function RegistrationProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<RegistrationData>(defaultData)
 
-  const update = (fields: Partial<RegistrationData>) => {
+  const update = useCallback((fields: Partial<RegistrationData>) => {
     setData(prev => ({ ...prev, ...fields }))
-  }
+  }, [])
 
-  const reset = () => setData(defaultData)
+  const reset = useCallback(() => setData(defaultData), [])
+
+  const meta = useMemo(() => computeMeta(data), [data])
+  const value = useMemo(() => ({ data, meta, update, reset }), [data, meta, update, reset])
 
   return (
-    <RegistrationContext.Provider value={{ data, meta: computeMeta(data), update, reset }}>
+    <RegistrationContext.Provider value={value}>
       {children}
     </RegistrationContext.Provider>
   )

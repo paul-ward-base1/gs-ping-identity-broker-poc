@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
 import { pingOneSamlSloUrl } from '../auth/oidc-config'
 import { getBrokerLogoutStrategy } from '../auth/pingone-saml-logout'
+import { signinWithPopupFallback } from '../auth/signinWithPopup'
 import './TopNav.css'
 import gsLogo from '../assets/gs-logo.png'
 
@@ -145,8 +146,7 @@ export function TopNav({ cartCount = 0 }: TopNavProps) {
               // an existing broker session established through Okta. When no
               // broker session exists, the application's first assigned policy
               // (Gigya-Federated) remains the default interactive login.
-              auth.signinRedirect()
-                .catch(err => console.error('[debug] signinRedirect failed:', err))
+              signinWithPopupFallback(auth)
             }}>
               <PersonIcon /> Sign in
             </button>

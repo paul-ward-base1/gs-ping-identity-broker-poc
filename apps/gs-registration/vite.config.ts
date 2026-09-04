@@ -27,6 +27,8 @@ export default defineConfig({
         // Hidden-iframe target for OIDC silent renew — must be a real build
         // entry (not a public/ file) so its module script resolves in prod.
         silentRenew: fileURLToPath(new URL('./silent-renew.html', import.meta.url)),
+        // Popup-window target for OIDC signinPopup(), same reasoning as above.
+        popupCallback: fileURLToPath(new URL('./popup-callback.html', import.meta.url)),
       },
     },
   },

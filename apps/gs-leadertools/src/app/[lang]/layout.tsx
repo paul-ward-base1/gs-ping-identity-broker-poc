@@ -114,6 +114,11 @@ export default async function RootLayout({
   );
 }
 
-export const dynamic = 'force-dynamic';
+// Auth/session state resolves client-side (next-auth's SessionProvider), and
+// the only server-side per-request read (the author-mode login-token cookie
+// in src/lib/api.ts) only runs when AEM_MODE=author, a separate UE dev
+// deployment — so this can be revalidated on the same cadence as the AEM
+// data it renders instead of forced dynamic on every request.
+export const revalidate = 600;
 
 export const metadata: Metadata = process.env.NOINDEX === 'true' ? { robots: { index: false, follow: false } } : {};

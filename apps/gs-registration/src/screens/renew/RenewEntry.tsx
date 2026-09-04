@@ -1,6 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'react-oidc-context'
+import { signinWithPopupFallback } from '../../auth/signinWithPopup'
 import { TopNav } from '../../components/TopNav'
 import { Footer } from '../../components/Footer'
 import { TextField } from '../../components/TextField'
@@ -87,7 +88,7 @@ export function RenewEntry() {
             <span>or</span>
           </div>
 
-          <Button type="button" onClick={() => auth.signinRedirect()}>
+          <Button type="button" onClick={() => signinWithPopupFallback(auth)}>
             Sign in with Girl Scouts
           </Button>
 

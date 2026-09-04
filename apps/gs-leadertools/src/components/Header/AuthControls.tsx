@@ -1,18 +1,63 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSession, signIn } from 'next-auth/react';
+import { POPUP_AUTH_MESSAGE_SOURCE, type PopupAuthMessage } from '@/lib/popupAuthMessage';
 import './AuthControls.scss';
 
+const POPUP_WIDTH = 700;
+const POPUP_HEIGHT = 550;
+
+// window.open() only centers relative to the screen if left/top are given
+// explicitly — compute them from the current browser window so the popup
+// appears centered over it rather than wherever the OS defaults to.
+function centeredPopupFeatures(width: number, height: number): string {
+  const left = (window.screenX ?? 0) + Math.max(0, (window.outerWidth - width) / 2);
+  const top = (window.screenY ?? 0) + Math.max(0, (window.outerHeight - height) / 2);
+  return `width=${width},height=${height},left=${left},top=${top}`;
+}
+
+// next-auth v5 has no built-in popup mode: fetch the provider's authorization
+// URL via signIn(..., { redirect: false }) and navigate a popup to it
+// ourselves. The popup is opened synchronously on the click (before the
+// `await`) so browsers don't treat it as an unrequested popup once the async
+// signIn() call resolves.
+function openGigyaSignInPopup() {
+  const popup = window.open('', 'gs-leadertools-signin', centeredPopupFeatures(POPUP_WIDTH, POPUP_HEIGHT));
+  void signIn(
+    'broker',
+    { redirect: false, callbackUrl: `${window.location.origin}/en/auth/popup-complete` },
+    { acr_values: 'GigyaOnly' }
+  ).then(result => {
+    if (!result?.url) return;
+    if (popup && !popup.closed) {
+      popup.location.href = result.url;
+    } else {
+      // Popup blocked — fall back to a full-page redirect.
+      window.location.href = result.url;
+    }
+  });
+}
+
 export const AuthControls = () => {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+
+  useEffect(() => {
+    function handlePopupMessage(event: MessageEvent<PopupAuthMessage>) {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.source !== POPUP_AUTH_MESSAGE_SOURCE) return;
+      if (event.data.status === 'complete') void update();
+    }
+    window.addEventListener('message', handlePopupMessage);
+    return () => window.removeEventListener('message', handlePopupMessage);
+  }, [update]);
 
   if (status === 'loading') return null;
 
   if (!session?.user) {
     return (
       <div className="gs-auth-controls">
-        <button className="gs-auth-controls__sign-in" onClick={() => signIn('broker', undefined, { acr_values: 'GigyaOnly' })}>
+        <button className="gs-auth-controls__sign-in" onClick={openGigyaSignInPopup}>
           Sign In
         </button>
         <button className="gs-auth-controls__sign-in gs-auth-controls__sign-in--admin" onClick={() => signIn('broker', undefined, { acr_values: 'OktaOnly' })}>

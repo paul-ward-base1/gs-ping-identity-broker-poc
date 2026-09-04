@@ -21,6 +21,13 @@ export const oidcSettings: UserManagerSettings = {
   client_id: 'c9193ae2-d29e-4dc5-b0ff-79ac9b9a4e07',
   redirect_uri: `${window.location.origin}/callback`,
   silent_redirect_uri: `${window.location.origin}/silent-renew.html`,
+  // A separate static page rather than the SPA's own /callback route: the
+  // popup only needs to relay the response back to the opener (which holds
+  // the PKCE code_verifier and does the real token exchange), so it must not
+  // mount the full app and trigger AuthProvider's own redirect-callback
+  // handling a second time.
+  popup_redirect_uri: `${window.location.origin}/popup-callback.html`,
+  popupWindowFeatures: { width: 700, height: 550 },
   // PingOne is this app's only OP. Any upstream-IdP logout must be performed
   // by the broker, using the broker's own Gigya connection and token context.
   post_logout_redirect_uri: `${window.location.origin}/post-signoff`,

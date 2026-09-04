@@ -1,5 +1,5 @@
 import './RichText.scss';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { cn } from '@/utils/classNames';
 import { richTextDangerousHtml } from '@/utils/sanitizeHtml';
 
@@ -9,7 +9,10 @@ interface RichTextProps extends React.HTMLAttributes<HTMLDivElement> {
   value: string;
 }
 
-export const RichText = ({ value, className, ...rest }: RichTextProps) => {
+export const RichText = React.memo(({ value, className, ...rest }: RichTextProps) => {
   const mergedClassName = className ? `${bem()} ${className}` : bem();
-  return <div {...rest} className={mergedClassName} dangerouslySetInnerHTML={richTextDangerousHtml(value)} />;
-};
+  const dangerousHtml = useMemo(() => richTextDangerousHtml(value), [value]);
+  return <div {...rest} className={mergedClassName} dangerouslySetInnerHTML={dangerousHtml} />;
+});
+
+RichText.displayName = 'RichText';

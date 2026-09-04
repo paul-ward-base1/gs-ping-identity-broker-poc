@@ -9,9 +9,14 @@ function SignInRedirect() {
   const callbackUrl = searchParams.get('callbackUrl') || '/en';
 
   useEffect(() => {
-    if (searchParams.get('error')) {
+    const error = searchParams.get('error');
+    if (error) {
       sessionStorage.setItem('sso-checked', Date.now().toString());
-      window.location.href = callbackUrl.startsWith('/') ? callbackUrl : '/en';
+      const target = new URL(callbackUrl.startsWith('/') ? callbackUrl : '/en', window.location.origin);
+      // Forwarded so a popup-complete destination can report failure instead
+      // of the popup silently reporting success back to its opener.
+      target.searchParams.set('error', error);
+      window.location.href = target.toString();
       return;
     }
     const hint = searchParams.get('hint');
