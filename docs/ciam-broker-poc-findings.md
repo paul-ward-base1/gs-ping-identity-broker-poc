@@ -375,7 +375,7 @@ A parallel Okta OIDC provider was considered while SAML authentication was block
 - Redis provides a shared revocation store for the POC applications.
 - The development start/stop scripts start and stop the Redis Compose service while preserving its named data volume.
 - Downstream logout records PingOne session or subject revocation data so other participating applications can reject existing sessions.
-- `gs-registration` polls its session-status endpoint because it is a browser SPA.
+- `gs-registration` is a browser SPA, so it learns about revocation via a persistent `/api/auth/session-events` (server-sent events) connection pushed from Redis pub/sub, rather than polling on a fixed interval; a one-shot `/api/auth/session-status` endpoint remains available for manual checks.
 - Back-channel logout endpoints validate signed logout tokens before revoking sessions.
 - A real cloud-to-localhost back-channel push cannot be demonstrated without a publicly reachable HTTPS callback.
 - PingOne discovery in the tested tenant does not advertise OIDC back-channel logout support.

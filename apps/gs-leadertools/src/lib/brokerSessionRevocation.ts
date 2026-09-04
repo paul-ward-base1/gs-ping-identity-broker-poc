@@ -127,21 +127,35 @@ export async function isSessionRevoked(reference: BrokerSessionReference): Promi
   }
 }
 
+// Cached per issuer so a repeated backchannel-logout POST reuses the same
+// createRemoteJWKSet instance (which caches keys internally) instead of
+// re-fetching OIDC discovery and rebuilding the JWKS client every call.
+const verificationKeyPromises = new Map<string, Promise<ReturnType<typeof createRemoteJWKSet>>>();
+
+async function getVerificationKey(issuer: string): Promise<ReturnType<typeof createRemoteJWKSet>> {
+  let keyPromise = verificationKeyPromises.get(issuer);
+  if (!keyPromise) {
+    keyPromise = fetch(`${issuer.replace(/\/$/, "")}/.well-known/openid-configuration`)
+      .then((response) => {
+        if (!response.ok) throw new Error("unable to load OIDC discovery");
+        return response.json() as Promise<{ jwks_uri?: string }>;
+      })
+      .then((metadata) => {
+        if (!metadata.jwks_uri) throw new Error("OIDC discovery is missing jwks_uri");
+        return createRemoteJWKSet(new URL(metadata.jwks_uri));
+      });
+    verificationKeyPromises.set(issuer, keyPromise);
+  }
+  return keyPromise;
+}
+
 export async function verifyAndHandleBackchannelLogout(
   logoutToken: string,
   options: { issuer: string; audience: string }
 ): Promise<void> {
-  const discoveryResponse = await fetch(
-    `${options.issuer.replace(/\/$/, "")}/.well-known/openid-configuration`
-  );
-  if (!discoveryResponse.ok) throw new Error("unable to load OIDC discovery");
-
-  const metadata = (await discoveryResponse.json()) as { jwks_uri?: string };
-  if (!metadata.jwks_uri) throw new Error("OIDC discovery is missing jwks_uri");
-
   const { payload } = await jwtVerify(
     logoutToken,
-    createRemoteJWKSet(new URL(metadata.jwks_uri)),
+    await getVerificationKey(options.issuer),
     {
       issuer: options.issuer,
       audience: options.audience,

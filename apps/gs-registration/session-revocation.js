@@ -16,6 +16,73 @@ const redis = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
 })
 redis.on('error', () => {})
 
+// A dedicated connection is required because once ioredis issues SUBSCRIBE,
+// that connection can no longer run ordinary commands (GET/SET/PUBLISH).
+const REVOKED_EVENTS_CHANNEL = 'bcl:revoked-events'
+const redisSub = new Redis(process.env.REDIS_URL ?? 'redis://localhost:6379', {
+  maxRetriesPerRequest: 1,
+  lazyConnect: true,
+})
+redisSub.on('error', () => {})
+
+// Open /api/auth/session-events connections for this process, so a
+// revocation published by any app instance can be pushed to the exact
+// browser tabs it affects instead of waiting for a client-side poll.
+const connectionsBySid = new Map()
+const connectionsBySub = new Map()
+
+function registerConnection(payload, res) {
+  if (typeof payload.sid === 'string') {
+    if (!connectionsBySid.has(payload.sid)) connectionsBySid.set(payload.sid, new Set())
+    connectionsBySid.get(payload.sid).add(res)
+  }
+  if (typeof payload.sub === 'string') {
+    if (!connectionsBySub.has(payload.sub)) connectionsBySub.set(payload.sub, new Set())
+    connectionsBySub.get(payload.sub).add({ res, issuedAt: payload.iat })
+  }
+}
+
+function unregisterConnection(payload, res) {
+  const sidSet = connectionsBySid.get(payload.sid)
+  if (sidSet) {
+    sidSet.delete(res)
+    if (!sidSet.size) connectionsBySid.delete(payload.sid)
+  }
+  const subSet = connectionsBySub.get(payload.sub)
+  if (subSet) {
+    for (const entry of subSet) if (entry.res === res) subSet.delete(entry)
+    if (!subSet.size) connectionsBySub.delete(payload.sub)
+  }
+}
+
+function pushRevoked(res) {
+  try {
+    res.write(`data: ${JSON.stringify({ revoked: true })}\n\n`)
+    res.end()
+  } catch {
+    // Connection already closed; nothing to do.
+  }
+}
+
+redisSub.subscribe(REVOKED_EVENTS_CHANNEL).catch(() => {})
+redisSub.on('message', (_channel, message) => {
+  let event
+  try {
+    event = JSON.parse(message)
+  } catch {
+    return
+  }
+
+  for (const res of connectionsBySid.get(event.sid) ?? []) pushRevoked(res)
+
+  const cutoff = Number(event.revokedAt)
+  for (const entry of connectionsBySub.get(event.sub) ?? []) {
+    if (!entry.issuedAt || !Number.isFinite(cutoff) || entry.issuedAt <= cutoff) {
+      pushRevoked(entry.res)
+    }
+  }
+})
+
 let verificationKeyPromise
 
 function identifierKey(kind, value) {
@@ -60,6 +127,17 @@ async function revokeSession(payload, revokedAt = Math.floor(Date.now() / 1000))
     writes.push(redis.set(identifierKey('sub', payload.sub), String(revokedAt), 'EX', sessionMaxAge))
   }
   if (writes.length) await Promise.all(writes)
+
+  try {
+    await redis.publish(
+      REVOKED_EVENTS_CHANNEL,
+      JSON.stringify({ sid: payload.sid, sub: payload.sub, revokedAt })
+    )
+  } catch {
+    // Live push is best-effort; the Redis SET writes above remain the source
+    // of truth, so a missed publish just means /session-status must be
+    // relied upon instead of an immediate push for that one event.
+  }
 }
 
 async function sessionIsRevoked(payload) {
@@ -157,6 +235,61 @@ export function createSessionRevocationRouter() {
     } catch {
       res.status(401).json({ error: 'invalid id_token' })
     }
+  })
+
+  // Replaces client-side polling: the browser opens one connection and is
+  // pushed a revocation the moment it is published, instead of asking on a
+  // fixed interval. EventSource cannot send an Authorization header, so the
+  // ID token travels as a query param here, same as the POST endpoints above
+  // send it in the body.
+  router.get('/api/auth/session-events', async (req, res) => {
+    // The browser tears this connection down mid-logout (navigating through
+    // PingOne/Gigya/SAML redirects), which resets the socket. Without these
+    // listeners, Node treats that reset as an unhandled 'error' event and
+    // crashes the whole process instead of just closing this one connection.
+    req.on('error', () => {})
+    res.on('error', () => {})
+
+    const idToken = req.query.id_token
+    if (typeof idToken !== 'string') {
+      res.status(400).json({ error: 'missing id_token' })
+      return
+    }
+
+    let payload
+    try {
+      ;({ payload } = await verifyToken(idToken))
+    } catch {
+      res.status(401).json({ error: 'invalid id_token' })
+      return
+    }
+
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    })
+
+    if (await sessionIsRevoked(payload)) {
+      pushRevoked(res)
+      return
+    }
+
+    registerConnection(payload, res)
+    // Keeps the connection from being dropped as idle by intermediate
+    // proxies/load balancers.
+    const heartbeat = setInterval(() => {
+      try {
+        res.write(': ping\n\n')
+      } catch {
+        clearInterval(heartbeat)
+      }
+    }, 20000)
+
+    req.on('close', () => {
+      clearInterval(heartbeat)
+      unregisterConnection(payload, res)
+    })
   })
 
   return router
